@@ -1,0 +1,22 @@
+{
+  "id": "e0d207ad-6200-49be-b4de-82a0e100a258",
+  "name": "bullseye",
+  "description": "",
+  "baseQuestionType": "GridForm",
+  "disableDefaultRendering": true,
+  "iconUrl": "design/icon.svg",
+  "designEntryPoint": "design/index.html",
+  "runtimeEntryPoint": {
+    "component": "runtime/component.js",
+    "deps": {
+      "scripts": [
+        "https://author.euro.confirmit.com/isa/BDJPFRDMEYBPBKLVADAYFQCDAVIOEQJR/AGalaida/jquery.1.12.4.min.js",
+        "https://author.euro.confirmit.com//isa/BDJPFRDMEYBPBKLVADAYFQCDAVIOEQJR/AGalaida/interact.min.js",
+        "runtime/TargetDropAndDrown.js"
+        ],
+      "styles": [
+        "runtime/styles.css"
+      ]
+    }
+  }
+}
