@@ -12,8 +12,8 @@
       "scripts": [
         "https://author.euro.confirmit.com/isa/BDJPFRDMEYBPBKLVADAYFQCDAVIOEQJR/AGalaida/jquery.1.12.4.min.js",
         "https://author.euro.confirmit.com//isa/BDJPFRDMEYBPBKLVADAYFQCDAVIOEQJR/AGalaida/interact.min.js",
-        "runtime/TargetDropAndDrown.js"
-        ],
+        "runtime/bundle.js"
+      ],
       "styles": [
         "runtime/styles.css"
       ]

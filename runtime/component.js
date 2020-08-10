@@ -1,5 +1,4 @@
 /* global register */
-
 register(function (question, customQuestionSettings, questionViewSettings) {
 debugger;
     var circleSize = parseInt(customQuestionSettings.sizeSetting);
@@ -8,6 +7,7 @@ debugger;
     let isCenterActiveFlag = customQuestionSettings.centerIsActiveSetting;
     let shouldBeAtLeastOneAnswerFlag = customQuestionSettings.requiredSetting;
     let maxSizeOfIcon = parseInt(customQuestionSettings.maxIconSizeSetting);
-    new TargetDropAndDrown(question, circleSize, maxSizeOfIcon, colors, centerText, shouldBeAtLeastOneAnswerFlag, isCenterActiveFlag)
+    const bullsEye = new customQuestionsLibrary.BullsEye(question, circleSize, maxSizeOfIcon, colors, centerText, shouldBeAtLeastOneAnswerFlag, isCenterActiveFlag);
+    bullsEye.render();
     // TODO: put your code here
 });

@@ -1,4 +1,4 @@
-class TargetDropAndDrown {
+export default class BullsEye {
     constructor(question, size, maxSizeOfIcon, circleColors, centerText, shouldBeAtLeastOneAnswerFlag, isCenterActiveFlag) {
         this.question = question;
         this.bullsEyeSize = size;
@@ -8,6 +8,7 @@ class TargetDropAndDrown {
         this.lowestRank = isCenterActiveFlag ? 0 : 1;
         this.totalCircles = this.question.scales.length && this.question.scales.length > 1 ? this.question.scales.length + this.lowestRank : 1;
         this.diameter = this.bullsEyeSize > this.qContainer.scrollWidth - 40 ? this.qContainer.scrollWidth - 40 : this.bullsEyeSize;
+        this.diameter = this.bullsEyeSize > this.qContainer.scrollWidth - 40 ? this.qContainer.scrollWidth - 40 : this.bullsEyeSize;
         this.largeSizeRadius = this.diameter / 2;
         this.center = this.largeSizeRadius;
         this.gapSize = this.largeSizeRadius / this.totalCircles;
@@ -15,16 +16,13 @@ class TargetDropAndDrown {
         this.iconDiameter = this.updatedmaxSizeOfIcon > this.gapSize ? this.gapSize : this.updatedmaxSizeOfIcon;
         this.colors = circleColors && circleColors.length > 0 ? circleColors : ['#cc0000', '#d67107', '#e09219', '#f5cd03', '#14ca86', '#4b9fdc'];
         this.centerIsActive = isCenterActiveFlag;
-        this.init();
-    }
 
-    init() {
-        window.dragMoveListener = this.dragMoveListener;
-        this.render();
-        this.initValues();
-        if (this.shouldBeAtLeaseOneAnswerFlag) {
-            this.subscribeToQuestion();
-        }
+        this.question.validationEvent.on(
+            this.onQuestionValidationComplete.bind(this)
+        );
+
+   //     window.dragMoveListener = this.dragMoveListener;
+//        this.init();
     }
 
     render() {
@@ -51,6 +49,7 @@ class TargetDropAndDrown {
         this.createIcons();
         this.makeIconsDraggable();
         this.createBullsEye();
+        this.initValues();
     }
 
     createBullsEye() {
@@ -195,6 +194,7 @@ class TargetDropAndDrown {
         const originY = $('[data-group-name="' + group + '"]').position().top;
         const iconOffset = this.iconDiameter / 2;
         // x will be negative as icons are place to the right
+
         let offsetX = (originX - coords.x) * -1;
         offsetX = offsetX - iconOffset;
         // determin if y is - or +
@@ -215,6 +215,7 @@ class TargetDropAndDrown {
     }
 
     dragMoveListener(event) {
+        debugger;
         const target = event.target;
         // keep the dragged position in the data-x/data-y attributes
         const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
@@ -263,6 +264,7 @@ class TargetDropAndDrown {
                 .attr('height', '30')
                 .attr('width', '60')
                 .attr('fill', "#fff")
+                .attr('font-size', radius/2)
                 .text(this.centerText)
                 .appendTo($svg);
         }
@@ -282,7 +284,7 @@ class TargetDropAndDrown {
 
     onQuestionValidationComplete(validationResult) {
         //Question level error
-        if(Object.keys(this.question.values).length == 0) {
+        if(this.shouldBeAtLeaseOneAnswerFlag && Object.keys(this.question.values).length == 0) {
             const error = {message: 'Please provide at least one answer'};
             validationResult.errors.push(error);
         }
