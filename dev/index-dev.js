@@ -6,8 +6,9 @@ import BullsEye from "./BullsEye-dev";
     var colors = ["#718792", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea"]; //["#504cb6", "#49c0be", "#98d0b5", "#f5c588", "#a7310b"];
     var centerText = "50";
     let isCenterActiveFlag = true;
-    let shouldBeAtLeastOneAnswerFlag = true
+    let numberOfRequired = 3;
+    //let shouldBeAtLeastOneAnswerFlag = false;
     let maxSizeOfIcon = 0;
-    const bullsEye = new BullsEye(question, circleSize, maxSizeOfIcon, colors, centerText, shouldBeAtLeastOneAnswerFlag, isCenterActiveFlag)
+    const bullsEye = new BullsEye(question, circleSize, maxSizeOfIcon, colors, centerText, numberOfRequired, isCenterActiveFlag)
     bullsEye.render();
 })();

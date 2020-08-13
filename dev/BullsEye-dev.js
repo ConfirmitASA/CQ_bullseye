@@ -1,9 +1,9 @@
 export default class BullsEye {
-    constructor(question, size, maxSizeOfIcon, circleColors, centerText, shouldBeAtLeastOneAnswerFlag, isCenterActiveFlag) {
+    constructor(question, size, maxSizeOfIcon, circleColors, centerText, numberOfRequired, isCenterActiveFlag) {
         this.question = question;
-        this.bullsEyeSize = size;
+        this.bullsEyeSize = size > 0 ? size : 500;
         this.centerText = centerText;
-        this.shouldBeAtLeaseOneAnswerFlag = shouldBeAtLeastOneAnswerFlag;
+        this.numberOfRequired = numberOfRequired > 0 ? numberOfRequired : 0;
         this.qContainer = document.querySelector("#" + question.id);
         this.lowestRank = isCenterActiveFlag ? 0 : 1;
         this.totalCircles = this.question.scales.length && this.question.scales.length > 1 ? this.question.scales.length + this.lowestRank : 1;
@@ -20,9 +20,6 @@ export default class BullsEye {
         this.question.validationEvent.on(
             this.onQuestionValidationComplete.bind(this)
         );
-
-   //     window.dragMoveListener = this.dragMoveListener;
-//        this.init();
     }
 
     render() {
@@ -215,7 +212,6 @@ export default class BullsEye {
     }
 
     dragMoveListener(event) {
-        debugger;
         const target = event.target;
         // keep the dragged position in the data-x/data-y attributes
         const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
@@ -284,7 +280,7 @@ export default class BullsEye {
 
     onQuestionValidationComplete(validationResult) {
         //Question level error
-        if(this.shouldBeAtLeaseOneAnswerFlag && Object.keys(this.question.values).length == 0) {
+        if(this.numberOfRequired && Object.keys(this.question.values).length < this.numberOfRequired) {
             const error = {message: 'Please provide at least one answer'};
             validationResult.errors.push(error);
         }

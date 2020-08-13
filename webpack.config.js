@@ -2,7 +2,7 @@ const path = require('path');
 module.exports = {
     entry: './dev/entry.js',
     output: {
-        filename: './bundle.js',
+        filename: './bullsEye_bundle.js',
         path: path.resolve(__dirname, 'runtime'),
     },
     optimization: {
