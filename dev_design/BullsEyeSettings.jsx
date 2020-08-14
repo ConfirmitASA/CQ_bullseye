@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import ColorPicker from "@confirmit/react-color-picker";
-
-export const BullsEyeSettings = (settings) => {
-
-    const [colorsCount, setColorsCount] = useState(settings.colorsCount);
-    const [colors, setColors] = useState(settings.colors);
+import Input from "./Input.jsx"
+//export const BullsEyeSettings = (settings) => {
+export const BullsEyeSettings = () => {
+    // const [colorsCount, setColorsCount] = useState(settings.colorsCount);
+    // const [colors, setColors] = useState(settings.colors);
+    const [colorsCount, setColorsCount] = useState(3);
+    const [colors, setColors] = useState(["#ff00ff", "#00ff00"]);
     const updateColor = (newCount) => (currentColors) => {
         const diff = newCount - currentColors.length;
         if (diff === 0) return currentColors;
@@ -25,14 +27,16 @@ export const BullsEyeSettings = (settings) => {
             colors: colors,
             colorsCount: colorsCount
         }
-        customQuestion.saveChanges(settings, false);
+        //customQuestion.saveChanges(settings, false);
     }, [colors, colorsCount])
-    console.log("I did it")
+
     return (<>
+        <Input />
         <input onChange={(e) => {
             setColorsCount(e.target.value);
             setColors(updateColor(e.target.value))
         }} value={colorsCount}></input>
+
         {
             colors.map((color, index) =>
                 <ColorPicker
@@ -47,6 +51,5 @@ export const BullsEyeSettings = (settings) => {
                         }
                     }/>)
         }
-
     </>)
 }

@@ -9,10 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@confirmit/react-color-picker": "^3.0.16",
-    "@confirmit/react-themes": "^5.0.1",
-    "@confirmit/react-transition-portal": "^1.2.0",
-    "@confirmit/react-z-index": "^2.1.0",
+    "@confirmit/react-color-picker": "^3.0.17",
+    "@confirmit/react-themes": "^5.0.2",
+    "@confirmit/react-transition-portal": "^1.3.0",
+    "@confirmit/react-z-index": "^2.1.1",
     "classnames": "^2.2.6",
     "hoist-non-react-statics": "^3.3.2",
     "react-transition-group": "^4.4.1"
