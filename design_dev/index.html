@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="customSettingsStyles.css">
+    <link rel="stylesheet" href="design-page-components.css">
+    <script type="text/javascript" src="design-page-components.js"></script>
+    <script src="../design/custom-question.js"></script>
+</head>
+<body>
+<div class="comd-alert comd-alert--info">
+    <div class="comd-alert__text" id="testID">
+        This type of question allows user rate answers on a bullseye (target)
+    </div>
+</div>
+
+<div class="node-properties__key-properties comd-panel">
+    <header class="node-properties__header co-flex co-flex--justify-between co-flex--center">
+        <div class="node-properties__toggle co-flex co-flex--center">
+            <h4 class="co-text-size-normal">Key Options</h4>
+        </div>
+        <div class="co-flex co-flex--center">
+            <button class="collapse-button comd-icon-button comd-panel__toggle--icon-button"></button>
+        </div>
+    </header>
+    <div class="comd-panel__collapse-area">
+        <div class="node-properties">
+            <div class="node-property-container">
+                <div class="node-property">
+                    <label class="node-property__label" for="size">Bullseye Size</label>
+                    <input class="form-control input-sm form-input form-input--8ch" type="text"
+                           id="size"/><span> px</span>
+                </div>
+                <div class="node-property">
+                    <label class="node-property__label" for="centerText">Center Text</label>
+                    <input class="form-control input-sm form-input form-input--8ch" type="text" id="centerText"/>
+                </div>
+            </div>
+            <div class="node-property-container">
+                <div class="node-property">
+                    <label class="node-property__label" for="iconsSize">Icons Size</label>
+                    <input class="form-control input-sm form-input form-input--8ch" type="text"
+                           id="iconsSize"/><span> px</span>
+                </div>
+                <div class="node-property">
+                    <label class="node-property__label" for="numberRequiredAnswers">Number of required
+                        answers</label>
+                    <input class="form-control input-sm form-input form-input--8ch" type="text"
+                           id="numberRequiredAnswers"/>
+                </div>
+            </div>
+        </div>
+        <div class="node-property">
+            <label class="node-property__label" for="itemsLayout">Items Layout</label>
+            <select class="form-input" name="itemsLayout" id="itemsLayout"/>
+            <option value="vertical" selected>vertical</option>
+            <option value="horizontal">horizontal</option>
+            </select>
+        </div>
+
+        <div class="node-property node-property--checkbox">
+            <div class="co-toggle  co-toggle--checkbox">
+                <input class="co-toggle__input" type="checkbox" id="centerIsActive"/>
+                <label class="node-property__label node-property__label--checkbox" for="centerIsActive">
+                    <div class="icon icon-checkbox co-icon">
+                    </div>
+                    <span>Make Center Active</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="comd-panel comd-panel--collapsed">
+    <header class="node-properties__header co-flex co-flex--justify-between co-flex--center">
+        <div class="node-properties__toggle co-flex co-flex--center">
+            <h4 class="co-text-size-normal">Set Colors</h4>
+        </div>
+        <div class="co-flex co-flex--center">
+            <button class="collapse-button comd-icon-button comd-panel__toggle--icon-button"></button>
+        </div>
+    </header>
+
+    <div class="comd-panel__collapse-area">
+        <div class="node-properties">
+            <div class="node-property-container">
+                <div class="node-property">
+                    <label class="node-property__label" for="colorsNumber">Number of target colors</label>
+                    <input class="form-control input-sm form-input form-input--8ch" type="text" id="colorsNumber"/>
+                    <div id="colorsContainer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="node-properties" style="padding-top: 0">
+            <div class="node-property-container">
+                <div class="node-property">
+                    <label class="node-property__label" for="centerTextColor">Center text color</label>
+                    <input class="form-input" type="color" id="centerTextColor" value="#ffffff"/>
+                </div>
+            </div>
+            <div class="node-property-container">
+                <div class="node-property">
+                    <label class="node-property__label" for="itemsColor">Items Color</label>
+                    <input class="form-input" type="color" id="itemsColor" value="#000088"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="comd-panel comd-panel--collapsed">
+    <header class="node-properties__header co-flex co-flex--justify-between co-flex--center">
+        <div class="node-properties__toggle co-flex co-flex--center">
+            <h4 class="co-text-size-normal">Set Images</h4>
+        </div>
+        <div class="co-flex co-flex--center">
+            <button class="collapse-button comd-icon-button comd-panel__toggle--icon-button"></button>
+        </div>
+    </header>
+
+    <div class="comd-panel__collapse-area">
+        <div class="node-properties">
+            <div class="node-property-container">
+                <div class="node-property">
+                    <label class="node-property__label" for="colorsNumber">Number of items with Images</label>
+                    <input class="form-control input-sm form-input form-input--8ch" type="text" id="imagesNumber"/>
+                    <div id="imagesContainer"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div>
+
+
+</div>
+
+<!--script src="./design_main.js" type="module"></script-->
+</body>

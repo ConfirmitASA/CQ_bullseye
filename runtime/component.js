@@ -1,13 +1,18 @@
 /* global register */
 register(function (question, customQuestionSettings, questionViewSettings) {
 debugger;
-    var circleSize = parseInt(customQuestionSettings.sizeSetting);
-    var colors = ["#718792", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea"]; //["#504cb6", "#49c0be", "#98d0b5", "#f5c588", "#a7310b"];
-    var centerText = customQuestionSettings.centerTextSetting;
-    let isCenterActiveFlag = customQuestionSettings.centerIsActiveSetting;
-    let shouldBeAtLeastOneAnswerFlag = customQuestionSettings.requiredSetting;
-    let maxSizeOfIcon = parseInt(customQuestionSettings.maxIconSizeSetting);
-    const bullsEye = new customQuestionsLibrary.BullsEye(question, circleSize, maxSizeOfIcon, colors, centerText, shouldBeAtLeastOneAnswerFlag, isCenterActiveFlag);
+    if (!customQuestionSettings) customQuestionSettings = [];
+    const circleSize = parseInt(customQuestionSettings.sizeSetting);
+    const colors = customQuestionSettings.bullsEyeColorsSetting;
+    const images = customQuestionSettings.iconsImages;
+    const centerText = customQuestionSettings.centerTextSetting;
+    const isCenterActiveFlag = customQuestionSettings.centerIsActiveSetting;
+    const numberOfRequired = customQuestionSettings.requiredSetting;
+    const iconsSize = parseInt(customQuestionSettings.iconsSizeSetting);
+    const centerTextColor = customQuestionSettings.centerTextColorSetting;
+    const itemsLayout = customQuestionSettings.itemsLayoutSetting;
+    const itemsColor = customQuestionSettings.itemsColorSetting;
+
+    const bullsEye = new customQuestionsLibrary.BullsEye(question, circleSize, iconsSize, colors, images, centerText, centerTextColor, numberOfRequired, isCenterActiveFlag, itemsLayout, itemsColor);
     bullsEye.render();
-    // TODO: put your code here
 });

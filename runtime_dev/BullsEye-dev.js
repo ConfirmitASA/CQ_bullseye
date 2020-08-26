@@ -1,22 +1,24 @@
 export default class BullsEye {
-    constructor(question, size, maxSizeOfIcon, circleColors, centerText, numberOfRequired, isCenterActiveFlag) {
+    constructor(question, size = 600, iconsSize = 30, circleColors, images, centerText, centerTextColor = "#ffffff", numberOfRequired = 0, isCenterActiveFlag = false, itemsLayout = "vertical", itemsColor = "#000088") {
         this.question = question;
-        this.bullsEyeSize = size > 0 ? size : 500;
+        this.bullsEyeSize = size ? size : 600;
         this.centerText = centerText;
-        this.numberOfRequired = numberOfRequired > 0 ? numberOfRequired : 0;
+        this.numberOfRequired = numberOfRequired;
         this.qContainer = document.querySelector("#" + question.id);
         this.lowestRank = isCenterActiveFlag ? 0 : 1;
         this.totalCircles = this.question.scales.length && this.question.scales.length > 1 ? this.question.scales.length + this.lowestRank : 1;
         this.diameter = this.bullsEyeSize > this.qContainer.scrollWidth - 40 ? this.qContainer.scrollWidth - 40 : this.bullsEyeSize;
-        this.diameter = this.bullsEyeSize > this.qContainer.scrollWidth - 40 ? this.qContainer.scrollWidth - 40 : this.bullsEyeSize;
         this.largeSizeRadius = this.diameter / 2;
         this.center = this.largeSizeRadius;
         this.gapSize = this.largeSizeRadius / this.totalCircles;
-        this.updatedmaxSizeOfIcon = maxSizeOfIcon && maxSizeOfIcon != 0 ? maxSizeOfIcon : 30;
-        this.iconDiameter = this.updatedmaxSizeOfIcon > this.gapSize ? this.gapSize : this.updatedmaxSizeOfIcon;
-        this.colors = circleColors && circleColors.length > 0 ? circleColors : ['#cc0000', '#d67107', '#e09219', '#f5cd03', '#14ca86', '#4b9fdc'];
+        this.isconsSize = iconsSize ? iconsSize : 30;
+        this.iconDiameter = this.isconsSize > this.gapSize ? this.gapSize : this.isconsSize;
+        this.colors = circleColors && circleColors.length > 0 ? circleColors : ["#718792", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea"];
+        this.images = images && images.length > 0 ? images : [];
         this.centerIsActive = isCenterActiveFlag;
-
+        this.centerTextColor = centerTextColor;
+        this.itemsColor = itemsColor;
+        this.itemsLayout = this.qContainer.scrollWidth < (this.diameter + 250) ? "horizontal" : itemsLayout;
         this.question.validationEvent.on(
             this.onQuestionValidationComplete.bind(this)
         );
@@ -34,7 +36,7 @@ export default class BullsEye {
         this.renderContent();
     }
 
-    renderContent(){
+    renderContent() {
         $(
             '<div id="target-question-wrapper">' +
             '<svg id="target-wrapper"></svg>' +
@@ -43,37 +45,51 @@ export default class BullsEye {
             '</div>' +
             '</div>'
         ).appendTo("#" + this.question.id);
+        $("#target-wrapper").attr({
+            "width": this.diameter,
+            "height": this.diameter,
+            "viewBox": "0 0 " + this.diameter + " " + this.diameter
+        });
+        $("#target-relations").css({
+            width: this.qContainer.scrollWidth > (this.diameter + 250) ? "calc(100% - " + (this.diameter + 50) + "px)" : "100%"
+        });
+        if (this.itemsLayout == "vertical") {
+            $("#target-relations-table").addClass("target-relations-table__vertical");
+            $("#target-relations-table").css({
+                height: this.diameter + "px"
+            });
+        }
+        this.createBullsEye();
         this.createIcons();
         this.makeIconsDraggable();
-        this.createBullsEye();
         this.initValues();
     }
 
     createBullsEye() {
         let emptyCenter = [];
         if (!this.centerIsActive)
-            emptyCenter.push({code:""})
-        this.question.scales.concat(emptyCenter).forEach((scale, index) => {
+            emptyCenter.push({code: ""});
+        emptyCenter.concat(this.question.scales).forEach((scale, index) => {
             const cId = "target_" + scale.code;
             const radius = this.gapSize * (index + 1);
-            this.drawCircle(this.center, this.center, this.colors[(index) % this.colors.length], cId, radius, index );
-        });
-        $("#target-wrapper").attr({
-            "width": this.diameter,
-            "height": this.diameter,
-            "viewBox": "0 0 " + this.diameter + " " + this.diameter
+            const dataRank = this.centerIsActive ? index : index - 1;
+            this.drawCircle(this.center, this.center, this.colors[(index) % this.colors.length], cId, radius, dataRank);
         });
     }
 
     createIcons() {
         let groups = {};
         let groupNames = [];
-        this.question.answers.forEach((answer) => {
+        this.question.answers.forEach((answer, index) => {
             const label = answer.text
             const group = label.split("#")[0].trim();
             const code = answer.code;
-            //const icon = '<span title="' + group + '" data-code="' + code + '" class="draggable" data-group="' + group + '" ><b>' + group + '</b></span>';
-            const icon = `<span title="${group}"  data-code="${code}" class="draggable" data-group="${group}" ><b>${group}</b></span>`
+            let icon = "";
+            if (this.images[index]) {
+                icon = `<span title="${group}"  data-code="${code}" class="draggable" data-group="${group}" back><img src="${this.images[index]}"></img></span>`
+            } else {
+                icon = `<span title="${group}"  data-code="${code}" class="draggable draggable__text" data-group="${group}" ><b>${group}</b></span>`
+            }
             if (typeof groups[group] === "undefined") {
                 groups[group] = [icon];
             } else {
@@ -92,9 +108,9 @@ export default class BullsEye {
                 `</div></div>`
             ).appendTo("#target-relations-table");
         });
-        $("#target-relations").css({
-            width: this.qContainer.scrollWidth > (this.diameter + 250) ? "calc(100% - " + (this.diameter + 50) + "px)" : "100%"
-        });
+
+
+
     }
 
     makeIconsDraggable() {
@@ -122,7 +138,8 @@ export default class BullsEye {
         $(".draggable").css({
             "width": (this.iconDiameter + 10) + "px",
             "height": (this.iconDiameter + 10) + "px",
-            "line-height": (this.iconDiameter) + "px"
+            "line-height": (this.iconDiameter) + "px",
+            "background-color" : this.itemsColor
         });
 
         $(".draggable-item").css({
@@ -135,14 +152,19 @@ export default class BullsEye {
         if (Object.keys(this.question.values).length === 0) {
             return;
         }
+        let degreeOffset = 0;
         Object.keys(this.question.values).forEach((answerCode) => {
             const value = this.question.values[answerCode];
-            const item = $('[data-code="'+ answerCode +'"]')
+            const item = $('[data-code="' + answerCode + '"]')
             const targetIndex = this.question.scales.findIndex(
                 (scale) => scale.code == this.question.values[answerCode]
             );
             if (this.lowestRank <= parseInt(targetIndex) && parseInt(targetIndex) < this.totalCircles) {
-                this.putItemOnTarget(item, value)
+                this.putItemOnTarget(item, value, degreeOffset);
+                degreeOffset += -30;
+                if (degreeOffset < -360) {
+                    degreeOffset = 0;
+                }
             }
         });
     }
@@ -152,7 +174,7 @@ export default class BullsEye {
         const y = event.pageY;
         const code = event.target.getAttribute("data-code");
         let rank = parseInt(this.checkItemInTargets(x, y));
-        if (this.lowestRank <= rank & rank < this.totalCircles) {
+        if (rank >= 0 & rank < this.totalCircles - this.lowestRank) {
             const rId = this.question.scales[rank].code;
             this.question.setValue(code, rId);
             $("#target_" + rId).animate({
@@ -169,7 +191,7 @@ export default class BullsEye {
             const top = item.attr("data-y");
             item.attr("data-x", "");
             item.attr("data-y", "");
-            item.css({ "left": left + "px", "top": top + "px", "transform": "translate(0,0)" });
+            item.css({"left": left + "px", "top": top + "px", "transform": "translate(0,0)"});
             item.animate({
                 left: 0,
                 top: 0
@@ -177,8 +199,7 @@ export default class BullsEye {
         }
     }
 
-    putItemOnTarget(item, target) {
-        let degreeOffset = 0;
+    putItemOnTarget(item, target, degreeOffset) {
         const centerX = $("#target-wrapper").position().left + ($("#target-wrapper").width() / 2);
         const centerY = $("#target-wrapper").position().top + ($("#target-wrapper").height() / 2);
         const circle = $('#target_' + target);
@@ -205,10 +226,7 @@ export default class BullsEye {
             "left": offsetX + "px",
             "top": offsetY + "px"
         });
-        degreeOffset += 30;
-        if (degreeOffset > 360) {
-            degreeOffset = 0;
-        }
+
     }
 
     dragMoveListener(event) {
@@ -219,7 +237,7 @@ export default class BullsEye {
         // translate the element
         //target.style.webkitTransform =
         target.style.transform =
-                'translate(' + x + 'px, ' + y + 'px)';
+            'translate(' + x + 'px, ' + y + 'px)';
 
         // update the posiion attributes
         target.setAttribute('data-x', x);
@@ -227,9 +245,12 @@ export default class BullsEye {
     }
 
     checkItemInTargets(hitx, hity) {
-        const hitTarget = null;
+        let codesToCheck = this.question.scales;
+        if (!this.centerIsActive) {
+            codesToCheck = [{code: ""}].concat(codesToCheck);
+        }
         for (let i = 0; i < this.totalCircles; i++) {
-            const target =  $("#target_" + this.question.scales[i].code);
+            const target = $("#target_" + codesToCheck[i].code);
             const x = target.position().left + parseInt(target.attr("r"));
             const y = target.position().top + parseInt(target.attr("r"));
             const hit = this.checkTargetHit(hitx, hity, x, y, parseInt(target.attr("r")));
@@ -254,13 +275,15 @@ export default class BullsEye {
 
         if (elemId == "target_" + this.question.scales[0].code) {
             $(document.createElementNS('http' + '://www.w3.org/2000/svg', 'text'))
-                .attr('x', x * 0.91)
-                .attr('y', y * 1.04)
+                .attr('x', "50%")
+                .attr('y', "50%")
+                .attr('text-anchor', "middle")
+                .attr('dy', '.3em')
                 .attr('class', 'metext')
                 .attr('height', '30')
                 .attr('width', '60')
-                .attr('fill', "#fff")
-                .attr('font-size', radius/2)
+                .attr('fill', this.centerTextColor)
+                .attr('font-size', radius / 2)
                 .text(this.centerText)
                 .appendTo($svg);
         }
@@ -271,21 +294,25 @@ export default class BullsEye {
         $('td[data-group-cell="' + label + '"] span, #' + input).addClass("highlight-cell");
     }
 
-    subscribeToQuestion() {
-        //this.question.validationEvent.on(onQuestionValidationComplete);
-        this.question.validationEvent.on(
-            this.onQuestionValidationComplete.bind(this)
-        );
-    }
-
     onQuestionValidationComplete(validationResult) {
-        //Question level error
-        if(this.numberOfRequired && Object.keys(this.question.values).length < this.numberOfRequired) {
-            const error = {message: 'Please provide at least one answer'};
+        $("#" + this.question.id).removeClass("cf-question--error");
+        $("#" + this.question.id + " .cf-error-block").remove();
+        if (this.numberOfRequired && this.question.values.length < this.numberOfRequired) {
+            const error = {message: 'Please provide at least ' + this.numberOfRequired + ' answer(s)'};
             validationResult.errors.push(error);
+            this.renderErrors();
+            $("#" + this.question.id + " .cf-error-list").append(error.message);
+            $("#" + this.question.id).addClass("cf-question--error");
         }
     }
 
+    renderErrors() {
+        $(
+            '<div class="cf-question__error cf-error-block cf-error-block--bottom">' +
+            '<ul class="cf-error-list"></ul>' +
+            "</div>"
+        ).insertAfter("#" + this.question.id + " .cf-question__instruction");
+    }
     radians(deg) {
         return deg % 360 * Math.PI / 180;
     }

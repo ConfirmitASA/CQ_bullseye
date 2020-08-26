@@ -1,6 +1,6 @@
 const path = require('path');
 module.exports = {
-    entry: './dev/entry.js',
+    entry: './runtime_dev/entry.js',
     output: {
         filename: './bullsEye_bundle.js',
         path: path.resolve(__dirname, 'runtime'),
