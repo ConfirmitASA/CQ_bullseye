@@ -18,10 +18,13 @@ export default class BullsEye {
         this.centerIsActive = isCenterActiveFlag;
         this.centerTextColor = centerTextColor;
         this.itemsColor = itemsColor;
-        this.itemsLayout = this.qContainer.scrollWidth < (this.diameter + 250) ? "horizontal" : itemsLayout;
+        this.itemsLayout = itemsLayout;
+        this.itemsPosition = this.qContainer.scrollWidth > (this.diameter + 250) ? "right" : "bottom"
         this.question.validationEvent.on(
             this.onQuestionValidationComplete.bind(this)
         );
+
+        window.addEventListener("resize", this.recalculatePositions.bind(this));
     }
 
     render() {
@@ -38,24 +41,26 @@ export default class BullsEye {
 
     renderContent() {
         $(
-            '<div id="target-question-wrapper">' +
-            '<svg id="target-wrapper"></svg>' +
-            '<div id="target-relations">' +
-            '<div id="target-relations-table"></div>' +
+            '<div class="target-question-wrapper">' +
+            '<div>' +
+            '<svg class="target-wrapper"></svg>' +
+            '</div>' +
+            '<div class="target-relations">' +
+            '<div class="target-relations-table"></div>' +
             '</div>' +
             '</div>'
         ).appendTo("#" + this.question.id);
-        $("#target-wrapper").attr({
+        $("#" + this.question.id + " .target-wrapper").attr({
             "width": this.diameter,
             "height": this.diameter,
             "viewBox": "0 0 " + this.diameter + " " + this.diameter
         });
-        $("#target-relations").css({
-            width: this.qContainer.scrollWidth > (this.diameter + 250) ? "calc(100% - " + (this.diameter + 50) + "px)" : "100%"
+        $("#" + this.question.id + " .target-relations").css({
+            width: this.qContainer.scrollWidth > (this.diameter + 250) ? this.diameter + "px" : "100%"
         });
         if (this.itemsLayout == "vertical") {
-            $("#target-relations-table").addClass("target-relations-table__vertical");
-            $("#target-relations-table").css({
+            $("#" + this.question.id + " .target-relations-table").addClass("target-relations-table__vertical");
+            $("#" + this.question.id + " .target-relations-table").css({
                 height: this.diameter + "px"
             });
         }
@@ -69,7 +74,7 @@ export default class BullsEye {
         let emptyCenter = [];
         if (!this.centerIsActive)
             emptyCenter.push({code: ""});
-        emptyCenter.concat(this.question.scales).forEach((scale, index) => {
+            emptyCenter.concat(this.question.scales).forEach((scale, index) => {
             const cId = "target_" + scale.code;
             const radius = this.gapSize * (index + 1);
             const dataRank = this.centerIsActive ? index : index - 1;
@@ -106,7 +111,7 @@ export default class BullsEye {
                 `<div data-group-cell="${groupName}">` +
                 `<span>${groupName}</span>` +
                 `</div></div>`
-            ).appendTo("#target-relations-table");
+            ).appendTo($("#" + this.question.id + " .target-relations-table"));
         });
 
 
@@ -114,7 +119,7 @@ export default class BullsEye {
     }
 
     makeIconsDraggable() {
-        interact('.draggable').draggable({
+        interact('#' + this.question.id + ' .draggable').draggable({
             inertia: false,
             // keep the element within the area of it's parent
             modifiers: [
@@ -174,10 +179,11 @@ export default class BullsEye {
         const y = event.pageY;
         const code = event.target.getAttribute("data-code");
         let rank = parseInt(this.checkItemInTargets(x, y));
+        debugger;
         if (rank >= 0 & rank < this.totalCircles - this.lowestRank) {
             const rId = this.question.scales[rank].code;
             this.question.setValue(code, rId);
-            $("#target_" + rId).animate({
+            $("#" + this.question.id + " #target_" + rId).animate({
                 opacity: 0.33
             }, 300).animate({
                 opacity: 1
@@ -186,7 +192,7 @@ export default class BullsEye {
         } else {
             //reset
             this.question.setValue(code, "");
-            let item = $('.draggable[data-code="' + code + '"]')
+            let item = $("#" + this.question.id + ' .draggable[data-code="' + code + '"]');
             const left = item.attr("data-x");
             const top = item.attr("data-y");
             item.attr("data-x", "");
@@ -200,9 +206,9 @@ export default class BullsEye {
     }
 
     putItemOnTarget(item, target, degreeOffset) {
-        const centerX = $("#target-wrapper").position().left + ($("#target-wrapper").width() / 2);
-        const centerY = $("#target-wrapper").position().top + ($("#target-wrapper").height() / 2);
-        const circle = $('#target_' + target);
+        const centerX = $("#" + this.question.id + " .target-wrapper").position().left + ($("#" + this.question.id + " .target-wrapper").width() / 2);
+        const centerY = $("#" + this.question.id + " .target-wrapper").position().top + ($("#" + this.question.id + " .target-wrapper").height() / 2);
+        const circle = $("#" + this.question.id + ' #target_' + target);
         const r = parseInt(circle.attr("r"));
         //get position where icon should be shown
         const coords = this.getCoords(centerX, centerY, degreeOffset, (r - (this.gapSize / 2)));
@@ -250,7 +256,7 @@ export default class BullsEye {
             codesToCheck = [{code: ""}].concat(codesToCheck);
         }
         for (let i = 0; i < this.totalCircles; i++) {
-            const target = $("#target_" + codesToCheck[i].code);
+            const target = $("#" + this.question.id + " #target_" + codesToCheck[i].code);
             const x = target.position().left + parseInt(target.attr("r"));
             const y = target.position().top + parseInt(target.attr("r"));
             const hit = this.checkTargetHit(hitx, hity, x, y, parseInt(target.attr("r")));
@@ -262,7 +268,7 @@ export default class BullsEye {
     }
 
     drawCircle(x, y, color, elemId, radius, rank) {
-        const $svg = $("#target-wrapper");
+        const $svg = $("#" + this.question.id + " .target-wrapper");
         $(document.createElementNS('http' + '://www.w3.org/2000/svg', 'circle'))
             .attr('cx', x)
             .attr('id', elemId)
@@ -273,7 +279,7 @@ export default class BullsEye {
             .attr('data-rank', rank)
             .prependTo($svg);
 
-        if (elemId == "target_" + this.question.scales[0].code) {
+        if (elemId == "#" + this.question.id +  " #target_" + this.question.scales[0].code) {
             $(document.createElementNS('http' + '://www.w3.org/2000/svg', 'text'))
                 .attr('x', "50%")
                 .attr('y', "50%")
@@ -313,11 +319,44 @@ export default class BullsEye {
             "</div>"
         ).insertAfter("#" + this.question.id + " .cf-question__instruction");
     }
+
+    recalculatePositions() {
+        if (this.qContainer.scrollWidth > (this.diameter + 250) && this.itemsPosition !== "right") {
+            this.itemsPosition = "right";
+            document.querySelectorAll("#" + this.question.id + " .draggable").forEach( item => {
+                if (item.getAttribute("data-x") && item.getAttribute("data-y") ) {
+                    const newXPosition = 0 - parseInt(this.bullsEyeSize) - 20 + parseInt(item.getAttribute("data-x"));
+                    const newYPosition = parseInt(this.bullsEyeSize) + 20 + parseInt(item.getAttribute("data-y"));
+                    item.setAttribute("data-x", newXPosition);
+                    item.setAttribute("data-y", newYPosition);
+                    item.style.transform =
+                        'translate(' + item.getAttribute("data-x") + 'px, ' + item.getAttribute("data-y") + 'px)';
+                }
+            })
+        }
+        else if (this.qContainer.scrollWidth <= (this.diameter + 250) && this.itemsPosition !== "bottom") {
+            this.itemsPosition = "bottom";
+            document.querySelectorAll("#" + this.question.id + " .draggable").forEach( item => {
+                if (item.getAttribute("data-x") && item.getAttribute("data-y") ) {
+                    const newXPosition = parseInt(this.bullsEyeSize) + 20 + parseInt(item.getAttribute("data-x"));
+                    const newYPosition = 0 - parseInt(this.bullsEyeSize) - 20 + parseInt(item.getAttribute("data-y"));
+                    item.setAttribute("data-x", newXPosition);
+                    item.setAttribute("data-y", newYPosition);
+                    item.style.transform =
+                        'translate(' + item.getAttribute("data-x") + 'px, ' + item.getAttribute("data-y") + 'px)';
+                }
+            })
+        }
+
+        // $("#" + this.question.id + " .target-relations").css({
+        //     width: this.qContainer.scrollWidth > (this.diameter + 250) ? "calc(100% - " + (this.diameter + 50) + "px)" : "100%"
+        // });
+    }
     radians(deg) {
         return deg % 360 * Math.PI / 180;
     }
 
-    getCoords(cx, cy, deg, radius) {
+        getCoords(cx, cy, deg, radius) {
         const angle = this.radians(deg);
         const x = cx + radius * Math.cos(angle);
         const y = cy + radius * Math.sin(angle);

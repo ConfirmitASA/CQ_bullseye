@@ -4,7 +4,7 @@
   "description": "",
   "baseQuestionType": "GridForm",
   "disableDefaultRendering": true,
-  "iconUrl": "design/icon.svg",
+  "iconUrl": "design/bullseye.png",
   "designEntryPoint": "design/index.html",
   "runtimeEntryPoint": {
     "component": "runtime/component.js",

@@ -1,22 +1,22 @@
 /* runtime styles */
-#target-wrapper {
+.target-wrapper {
     position: relative;
     margin: 10px;
 }
 
-#target-relations {
+.target-relations {
     float: right;
     margin: 10px;
 }
 
-#target-relations .draggable-item {
+.target-relations .draggable-item {
     position: relative;
     height: 80px;
     width: 80px;
     background: #e2e2e2;
     border-radius: 50%;
 }
-#target-relations-table {
+.target-relations-table {
     display: flex;
     flex-wrap: wrap;
 }
@@ -64,46 +64,47 @@
     width: 100%;
     height: 100%;
 }
-#target-question-wrapper .label-type {
+.target-question-wrapper .label-type {
     display: block;
 }
 
-#target-question-wrapper .ui-state-hover {
+.target-question-wrapper .ui-state-hover {
     opacity: .5;
 }
 
-#target-relations li {
+.target-relations li {
     list-style: none;
 }
 
-#target-question-wrapper audio {
+.target-question-wrapper audio {
     display: none;
 }
 
-#target-question-wrapper {
+.target-question-wrapper {
     width: 100%;
     /*background-color: #fff;*/
     display: flex;
     flex-wrap: wrap;
+    overflow-x: auto;
 }
 
-#target-question-wrapper #target-inputs {
+.target-question-wrapper .target-inputs {
     width: 400px;
     position: absolute;
     display: inline-block;
 }
 
-#target-question-wrapper .metext {
+.target-question-wrapper .metext {
     /*font-size: 1.75em;*/
     font-weight: 900;
 }
 
-#target-question-wrapper .highlight-cell {
+.target-question-wrapper .highlight-cell {
     background-color: rgb(247, 248, 199);
     color: #000;
 }
 
-#target-question-wrapper div[data-group-cell] span {
+.target-question-wrapper div[data-group-cell] span {
     padding: 16px 10px 12px 10px;
     white-space: nowrap;
 }

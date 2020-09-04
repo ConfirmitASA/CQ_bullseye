@@ -127,12 +127,12 @@ input[type=radio]:checked + label .icon-radio::before {
     line-height: 1;
     text-transform: uppercase;
     overflow: hidden;
-    -webkit-transition-property: background-color, fill, color;
-    -o-transition-property: background-color, fill, color;
-    transition-property: background-color, fill, color;
-    -webkit-transition-duration: 200ms;
-    -o-transition-duration: 200ms;
-    transition-duration: 200ms;
+    -webkit-transition-property: background-color, fill, color, transform;
+    -o-transition-property: background-color, fill, color, transform;
+    transition-property: background-color, fill, color, transform;
+    -webkit-transition-duration: 300ms;
+    -o-transition-duration: 300ms;
+    transition-duration: 300ms;
     outline: none;
 }
 .collapse-button::before {
@@ -442,19 +442,19 @@ input[type="color"] {
 
 /* collapse */
 .comd-panel {
-    -webkit-transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    -o-transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    margin-bottom: 10px;
 }
 .comd-panel__collapse-area {
     visibility: visible;
     opacity: 1;
-    -webkit-transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    -o-transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    -webkit-transition-property: visibility, opacity, height, padding, margin;
-    -o-transition-property: visibility, opacity, height, padding, margin;
-    transition-property: visibility, opacity, height, padding, margin;
+    max-height: 6000px;
+    overflow: hidden;
+    -webkit-transition: all 1100ms cubic-bezier(0.4, 0, 1, 0) 0ms;
+    -o-transition: all 1100ms cubic-bezier(0.4, 0, 1, 0) 0ms;
+    transition: all 1100ms cubic-bezier(0.4, 0, 1, 0) 0ms;
+    -webkit-transition-property: height, max-height, padding, margin;
+    -o-transition-property: height, max-height, padding, margin;
+    transition-property: height, max-height, padding, margin;
 }
 .comd-panel--collapsed .comd-panel__collapse-area {
     padding-top: 0;
@@ -462,8 +462,13 @@ input[type="color"] {
     margin-top: 0;
     margin-bottom: 0;
     overflow: hidden;
-    opacity: 0;
-    visibility: hidden;
+    max-height: 0px;
+    -webkit-transition: all 800ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    -o-transition: all 800ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    transition: all 800ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    -webkit-transition-property: height, max-height, padding, margin;
+    -o-transition-property: height, max-height, padding, margin;
+    transition-property: height, max-height, padding, margin;
 }
 /* collapse end */
 
@@ -746,3 +751,78 @@ input[type="color"] {
     margin-left:0.571rem;
 }
 /* button end */
+
+/* inputlist */
+.inputlist-container{
+    margin:5px 0;
+    /*max-height:85vh;*/
+    overflow-x:auto;
+}
+
+.inputlist{
+    table-layout:fixed;
+    /*max-width:100%;*/
+    /*width:100%;*/
+    border-collapse:separate;
+    border-spacing:10px 5px;
+    margin-bottom:13px;
+}
+
+.inputlist__header{
+    font-size:13px;
+    font-weight:600;
+    vertical-align:bottom;
+    padding:4px;
+    box-sizing:content-box;
+    text-align: left;
+}
+.inputlist__header[colspan="2"]{
+    text-align:center;
+    position:relative;
+}
+.inputlist__header[colspan="2"]::before, .inputlist__header[colspan="2"]::after{
+    content:"";
+    display:block;
+    position:absolute;
+    background:#fff;
+    bottom:-1px;
+    z-index:1;
+    height:1px;
+    width:4px;
+}
+.inputlist__header[colspan="2"]::before{
+    left:0;
+}
+.inputlist__header[colspan="2"]::after{
+    right:0;
+}
+
+.inputlist__column,
+.inputlist__header{
+    box-sizing:content-box;
+}
+
+.inputlist thead tr + tr .inputlist__header{
+    text-align:center;
+    font-weight:400;
+}
+
+/*.inputlist thead tr:first-child .inputlist__header{*/
+/*    padding-top:20px;*/
+/*}*/
+
+.inputlist__column{
+    position:relative;
+    padding:0 2px;
+    border-bottom:2px dashed transparent;
+    border-top:2px dashed transparent;
+    box-sizing:content-box;
+}
+.inputlist__column label{
+    margin-bottom:0;
+}
+
+.inputlist__item{
+    height:38px;
+}
+/* inputlist end */

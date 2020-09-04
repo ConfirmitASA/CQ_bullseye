@@ -28,7 +28,8 @@ export default class Images {
         if (newNumber === prevNumber) return;
         if (newNumber > prevNumber) {
             for (let i = prevNumber; i < newNumber; i++) {
-                let imageContainer = document.createElement("div")
+                let imageContainer = document.createElement("div");
+                imageContainer.setAttribute("id", `imgContainer_${i}`);
                 imageContainer.classList.add("imageContainer");
                 this.imagesContainer.appendChild(imageContainer);
                 let imageInput = document.createElement("input");
@@ -48,7 +49,7 @@ export default class Images {
             }
         } else {
             for (let i = newNumber; i < prevNumber; i++) {
-                this.imagesContainer.removeChild(document.getElementById(`img_${i}`))
+                this.imagesContainer.removeChild(document.getElementById(`imgContainer_${i}`))
                 this.imagesValues.pop();
             }
         }

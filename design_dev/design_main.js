@@ -1,7 +1,6 @@
 import Colors from "./bullseyeColors.js";
 import Images from "./images.js";
 
-
 let sizeInput = document.getElementById('size');
 let iconsSizeInput = document.getElementById('iconsSize');
 let centerTextInput = document.getElementById('centerText');

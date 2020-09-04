@@ -1,5 +1,5 @@
 /* global register */
-import BullsEye from "./BullsEye-dev";
+import BullsEye from "./BullsEye_dev";
 (function () {
     const question = Confirmit.page.questions[0];
     let circleSize = 500;
