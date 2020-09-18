@@ -16,7 +16,7 @@
 <div class="node-properties__key-properties comd-panel">
     <header class="node-properties__header co-flex co-flex--justify-between co-flex--center">
         <div class="node-properties__toggle co-flex co-flex--center">
-            <h4 class="co-text-size-normal">Key Options</h4>
+            <h4 class="co-text-size-normal">Key opions</h4>
         </div>
         <div class="co-flex co-flex--center">
             <button class="collapse-button comd-icon-button comd-panel__toggle--icon-button"></button>
@@ -26,56 +26,66 @@
         <div class="node-properties">
             <div class="node-property-container">
                 <div class="node-property">
-                    <label class="node-property__label" for="size">Bullseye Size
-                        <div class="sd-tooltip-help" data-tooltip-text="Size of the 'target' element in pixels"></div>
+                    <label class="node-property__label" for="size">Target diameter
+                        <div class="sd-tooltip-help"
+                             data-tooltip-text="Outside diameter of the target, in pixels"></div>
                     </label>
                     <input class="form-control input-sm form-input form-input--8ch" type="text"
                            id="size"/><span> px</span>
                 </div>
                 <div class="node-property">
-                    <label class="node-property__label" for="centerText">Center Text
-                        <div class="sd-tooltip-help" data-tooltip-text="Text that could be shown in the target center"></div>
+                    <label class="node-property__label" for="centerText">Center text
+                        <div class="sd-tooltip-help"
+                             data-tooltip-text="Text to be displayed in the center of the bullseye"></div>
                     </label>
                     <input class="form-control input-sm form-input form-input--8ch" type="text" id="centerText"/>
                 </div>
             </div>
             <div class="node-property-container">
                 <div class="node-property">
-                    <label class="node-property__label" for="iconsSize">Icons Size
-                        <div class="sd-tooltip-help" data-tooltip-text="Diameter of the draggable elements in pixels. Please note that it cannot be bigger than a target circle width"></div>
+                    <label class="node-property__label" for="iconsSize">Marker size
+                        <div class="sd-tooltip-help"
+                             data-tooltip-text="Diameter of the draggable markers, in pixels. This cannot be greater than the width of a target ring"></div>
                     </label>
                     <input class="form-control input-sm form-input form-input--8ch" type="text"
                            id="iconsSize"/><span> px</span>
                 </div>
                 <div class="node-property">
                     <label class="node-property__label" for="numberRequiredAnswers">Number of required answers
-                        <div class="sd-tooltip-help" data-tooltip-text="If question is marked as required on the Edit tab, all options should be placed on target"></div>
+                        <div class="sd-tooltip-help"
+                             data-tooltip-text="How many answers must be provided? If the question is required (set on Edit tab), then all must be used"></div>
                     </label>
                     <input class="form-control input-sm form-input form-input--8ch" type="text"
                            id="numberRequiredAnswers"/>
                 </div>
             </div>
         </div>
-        <div class="node-property">
-            <label class="node-property__label" for="itemsLayout">Items Layout
-                <div class="sd-tooltip-help" data-tooltip-text="The way draggable elements are listed - horizontally or vertically"></div>
-            </label>
-            <select class="form-input" name="itemsLayout" id="itemsLayout"/>
-            <option value="vertical" selected>vertical</option>
-            <option value="horizontal">horizontal</option>
-            </select>
-        </div>
+        <div class="node-properties" style="padding-top: 0px">
+            <div class="node-property-container">
+                <div class="node-property">
+                    <label class="node-property__label" for="itemsLayout">Marker layout
+                        <div class="sd-tooltip-help"
+                             data-tooltip-text="The markers can be listed vertically or horizontally."></div>
+                    </label>
+                    <select class="form-input" name="itemsLayout" id="itemsLayout"/>
+                    <option value="vertical" selected>Vertical</option>
+                    <option value="horizontal">Horizontal</option>
+                    </select>
+                </div>
 
-        <div class="node-property node-property--checkbox">
-            <div class="co-toggle  co-toggle--checkbox">
-                <input class="co-toggle__input" type="checkbox" id="centerIsActive"/>
-                <label class="node-property__label node-property__label--checkbox" for="centerIsActive">
-                    <div class="icon icon-checkbox co-icon">
-                    </div>
-                    <span>Make Center Active
-                        <div class="sd-tooltip-help" data-tooltip-text="If center is active it's possible to drag elements on it"></div>
+                <div class="node-property node-property--checkbox">
+                    <div class="co-toggle  co-toggle--checkbox">
+                        <input class="co-toggle__input" type="checkbox" id="centerIsActive"/>
+                        <label class="node-property__label node-property__label--checkbox" for="centerIsActive">
+                            <div class="icon icon-checkbox co-icon">
+                            </div>
+                            <span>Make center active
+                        <div class="sd-tooltip-help"
+                             data-tooltip-text="Check if the bullseye center circle is to be a valid answer"></div>
                     </span>
-                </label>
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -83,7 +93,7 @@
 <div class="comd-panel comd-panel--collapsed">
     <header class="node-properties__header co-flex co-flex--justify-between co-flex--center">
         <div class="node-properties__toggle co-flex co-flex--center">
-            <h4 class="co-text-size-normal">Set Colors
+            <h4 class="co-text-size-normal">Set colors
             </h4>
         </div>
         <div class="co-flex co-flex--center">
@@ -96,7 +106,8 @@
             <div class="node-property-container">
                 <div class="node-property">
                     <label class="node-property__label" for="colorsNumber">Number of target colors
-                        <div class="sd-tooltip-help" data-tooltip-text="Enter number of colors and then preferable colors. Target will be colored starting from the center. If number of selected colors is less than number of number of circles, they would be repeated"></div>
+                        <div class="sd-tooltip-help"
+                             data-tooltip-text="Enter number of colors and then preferable colors. Target will be colored starting from the center. If number of selected colors is less than number of number of circles, they would be repeated"></div>
                     </label>
                     <input class="form-control input-sm form-input form-input--8ch" type="text" id="colorsNumber"/>
                     <div id="colorsContainer"></div>
@@ -112,7 +123,7 @@
             </div>
             <div class="node-property-container">
                 <div class="node-property">
-                    <label class="node-property__label" for="itemsColor">Items Color</label>
+                    <label class="node-property__label" for="itemsColor">Items color</label>
                     <input class="form-input" type="color" id="itemsColor" value="#000088"/>
                 </div>
             </div>
@@ -122,7 +133,7 @@
 <div class="comd-panel comd-panel--collapsed">
     <header class="node-properties__header co-flex co-flex--justify-between co-flex--center">
         <div class="node-properties__toggle co-flex co-flex--center">
-            <h4 class="co-text-size-normal">Set Images</h4>
+            <h4 class="co-text-size-normal">Set images</h4>
         </div>
         <div class="co-flex co-flex--center">
             <button class="collapse-button comd-icon-button comd-panel__toggle--icon-button"></button>
@@ -133,8 +144,9 @@
         <div class="node-properties">
             <div class="node-property-container">
                 <div class="node-property">
-                    <label class="node-property__label" for="colorsNumber">Number of items with Images
-                        <div class="sd-tooltip-help" data-tooltip-text="Enter number of items with images and then images links, images will be added in order. If you'd like to skip an option, please leave the image link input empty."></div>
+                    <label class="node-property__label" for="colorsNumber">Number of items with images
+                        <div class="sd-tooltip-help"
+                             data-tooltip-text="Enter number of items with images and then images links, images will be added in order. If you'd like to skip an option, please leave the image link input empty."></div>
                     </label>
                     <input class="form-control input-sm form-input form-input--8ch" type="text" id="imagesNumber"/>
                     <div id="imagesContainer"></div>

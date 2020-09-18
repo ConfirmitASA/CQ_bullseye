@@ -7,8 +7,7 @@ export default class BullsEye {
         this.qContainer = document.querySelector("#" + question.id);
         this.lowestRank = isCenterActiveFlag ? 0 : 1;
         this.totalCircles = this.question.scales.length && this.question.scales.length > 1 ? this.question.scales.length + this.lowestRank : 1;
-        this.diameter = this.bullsEyeSize > this.qContainer.scrollWidth - 40 ? this.qContainer.scrollWidth - 40 : this.bullsEyeSize;
-        this.largeSizeRadius = this.diameter / 2;
+        this.largeSizeRadius = this.bullsEyeSize / 2;
         this.center = this.largeSizeRadius;
         this.gapSize = this.largeSizeRadius / this.totalCircles;
         this.isconsSize = iconsSize ? iconsSize : 30;
@@ -19,7 +18,7 @@ export default class BullsEye {
         this.centerTextColor = centerTextColor;
         this.itemsColor = itemsColor;
         this.itemsLayout = itemsLayout;
-        this.itemsPosition = this.qContainer.scrollWidth > (this.diameter + 250) ? "right" : "bottom"
+        this.itemsPosition = this.qContainer.scrollWidth >= this.bullsEyeSize + this.bullsEyeSize + 72 ? "right" : "bottom"
         this.question.validationEvent.on(
             this.onQuestionValidationComplete.bind(this)
         );
@@ -51,17 +50,18 @@ export default class BullsEye {
             '</div>'
         ).appendTo("#" + this.question.id);
         $("#" + this.question.id + " .target-wrapper").attr({
-            "width": this.diameter,
-            "height": this.diameter,
-            "viewBox": "0 0 " + this.diameter + " " + this.diameter
+            "width": this.bullsEyeSize,
+            "height": this.bullsEyeSize,
+            "viewBox": "0 0 " + this.bullsEyeSize + " " + this.bullsEyeSize
         });
         $("#" + this.question.id + " .target-relations").css({
-            width: this.qContainer.scrollWidth > (this.diameter + 250) ? this.diameter + "px" : "100%"
+            width: this.bullsEyeSize + "px",
+            minWidth: this.bullsEyeSize + "px"
         });
         if (this.itemsLayout == "vertical") {
             $("#" + this.question.id + " .target-relations-table").addClass("target-relations-table__vertical");
             $("#" + this.question.id + " .target-relations-table").css({
-                height: this.diameter + "px"
+                height: this.bullsEyeSize + "px"
             });
         }
         this.createBullsEye();
@@ -74,7 +74,7 @@ export default class BullsEye {
         let emptyCenter = [];
         if (!this.centerIsActive)
             emptyCenter.push({code: ""});
-            emptyCenter.concat(this.question.scales).forEach((scale, index) => {
+        emptyCenter.concat(this.question.scales).forEach((scale, index) => {
             const cId = "target_" + scale.code;
             const radius = this.gapSize * (index + 1);
             const dataRank = this.centerIsActive ? index : index - 1;
@@ -140,37 +140,16 @@ export default class BullsEye {
             //MIS CHECK highlighted item
             //this.highlightActiveItem(label, input);
         });
-        $(".draggable").css({
+        $('#' + this.question.id + " .draggable").css({
             "width": (this.iconDiameter + 10) + "px",
             "height": (this.iconDiameter + 10) + "px",
             "line-height": (this.iconDiameter) + "px",
             "background-color" : this.itemsColor
         });
 
-        $(".draggable-item").css({
+        $('#' + this.question.id + " .draggable-item").css({
             "width": (this.iconDiameter + 10) + "px",
             "height": (this.iconDiameter + 10) + "px"
-        });
-    }
-
-    initValues() {
-        if (Object.keys(this.question.values).length === 0) {
-            return;
-        }
-        let degreeOffset = 0;
-        Object.keys(this.question.values).forEach((answerCode) => {
-            const value = this.question.values[answerCode];
-            const item = $('[data-code="' + answerCode + '"]')
-            const targetIndex = this.question.scales.findIndex(
-                (scale) => scale.code == this.question.values[answerCode]
-            );
-            if (this.lowestRank <= parseInt(targetIndex) && parseInt(targetIndex) < this.totalCircles) {
-                this.putItemOnTarget(item, value, degreeOffset);
-                degreeOffset += -30;
-                if (degreeOffset < -360) {
-                    degreeOffset = 0;
-                }
-            }
         });
     }
 
@@ -179,7 +158,6 @@ export default class BullsEye {
         const y = event.pageY;
         const code = event.target.getAttribute("data-code");
         let rank = parseInt(this.checkItemInTargets(x, y));
-        debugger;
         if (rank >= 0 & rank < this.totalCircles - this.lowestRank) {
             const rId = this.question.scales[rank].code;
             this.question.setValue(code, rId);
@@ -205,6 +183,27 @@ export default class BullsEye {
         }
     }
 
+    initValues() {
+        if (Object.keys(this.question.values).length === 0) {
+            return;
+        }
+        let degreeOffset = 0;
+        Object.keys(this.question.values).forEach((answerCode) => {
+            const value = this.question.values[answerCode];
+            const item = $("#" + this.question.id + ' [data-code="' + answerCode + '"]');
+            const targetIndex = this.question.scales.findIndex(
+                (scale) => scale.code == this.question.values[answerCode]
+            );
+            if (this.lowestRank <= parseInt(targetIndex) && parseInt(targetIndex) < this.totalCircles) {
+                this.putItemOnTarget(item, value, degreeOffset);
+                degreeOffset += -30;
+                if (degreeOffset < -360) {
+                    degreeOffset = 0;
+                }
+            }
+        });
+    }
+
     putItemOnTarget(item, target, degreeOffset) {
         const centerX = $("#" + this.question.id + " .target-wrapper").position().left + ($("#" + this.question.id + " .target-wrapper").width() / 2);
         const centerY = $("#" + this.question.id + " .target-wrapper").position().top + ($("#" + this.question.id + " .target-wrapper").height() / 2);
@@ -228,11 +227,10 @@ export default class BullsEye {
 
         }
         offsetY = offsetY - iconOffset;
-        item.css({
-            "left": offsetX + "px",
-            "top": offsetY + "px"
-        });
-
+        item[0].style.transform =
+            'translate(' + offsetX + 'px, ' + offsetY + 'px)';
+        item[0].setAttribute('data-x', offsetX);
+        item[0].setAttribute('data-y', offsetY);
     }
 
     dragMoveListener(event) {
@@ -279,7 +277,7 @@ export default class BullsEye {
             .attr('data-rank', rank)
             .prependTo($svg);
 
-        if (elemId == "#" + this.question.id +  " #target_" + this.question.scales[0].code) {
+        if (elemId == "target_" + (this.centerIsActive ? this.question.scales[0].code : "")) {
             $(document.createElementNS('http' + '://www.w3.org/2000/svg', 'text'))
                 .attr('x', "50%")
                 .attr('y', "50%")
@@ -303,7 +301,7 @@ export default class BullsEye {
     onQuestionValidationComplete(validationResult) {
         $("#" + this.question.id).removeClass("cf-question--error");
         $("#" + this.question.id + " .cf-error-block").remove();
-        if (this.numberOfRequired && this.question.values.length < this.numberOfRequired) {
+        if (this.numberOfRequired && Object.keys(this.question.values).length < this.numberOfRequired) {
             const error = {message: 'Please provide at least ' + this.numberOfRequired + ' answer(s)'};
             validationResult.errors.push(error);
             this.renderErrors();
@@ -321,7 +319,7 @@ export default class BullsEye {
     }
 
     recalculatePositions() {
-        if (this.qContainer.scrollWidth > (this.diameter + 250) && this.itemsPosition !== "right") {
+        if (this.qContainer.scrollWidth >= this.bullsEyeSize + this.bullsEyeSize + 72 && this.itemsPosition !== "right") {
             this.itemsPosition = "right";
             document.querySelectorAll("#" + this.question.id + " .draggable").forEach( item => {
                 if (item.getAttribute("data-x") && item.getAttribute("data-y") ) {
@@ -334,7 +332,7 @@ export default class BullsEye {
                 }
             })
         }
-        else if (this.qContainer.scrollWidth <= (this.diameter + 250) && this.itemsPosition !== "bottom") {
+        else if (this.qContainer.scrollWidth < this.bullsEyeSize + this.bullsEyeSize + 72 && this.itemsPosition !== "bottom") {
             this.itemsPosition = "bottom";
             document.querySelectorAll("#" + this.question.id + " .draggable").forEach( item => {
                 if (item.getAttribute("data-x") && item.getAttribute("data-y") ) {
@@ -349,14 +347,14 @@ export default class BullsEye {
         }
 
         // $("#" + this.question.id + " .target-relations").css({
-        //     width: this.qContainer.scrollWidth > (this.diameter + 250) ? "calc(100% - " + (this.diameter + 50) + "px)" : "100%"
+        //     width: this.qContainer.scrollWidth > (this.bullsEyeSize + 250) ? "calc(100% - " + (this.bullsEyeSize + 50) + "px)" : "100%"
         // });
     }
     radians(deg) {
         return deg % 360 * Math.PI / 180;
     }
 
-        getCoords(cx, cy, deg, radius) {
+    getCoords(cx, cy, deg, radius) {
         const angle = this.radians(deg);
         const x = cx + radius * Math.cos(angle);
         const y = cy + radius * Math.sin(angle);

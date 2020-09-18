@@ -9,6 +9,8 @@ let centerIsActive = document.getElementById('centerIsActive');
 let centerTextColorInput = document.getElementById('centerTextColor');
 let itemsColorInput = document.getElementById('itemsColor');
 let itemsLayoutInput = document.getElementById('itemsLayout');
+let colorNumber = document.getElementById("colorsNumber");
+let imagesNumber = document.getElementById('imagesNumber');
 const colors = new Colors(saveChanges);
 const images = new Images(saveChanges);
 
@@ -38,6 +40,15 @@ function setValues(settings) {
 }
 
 function saveChanges() {
+    let validated = true;
+    validated = numberValidate(sizeInput, validated);
+    validated = numberValidate(iconsSizeInput, validated);
+    validated = numberValidate(requiredInput, validated);
+    validated = numberValidate(colorNumber, validated);
+    validated = numberValidate (imagesNumber, validated);
+    if (!validated)
+        return;
+
     let settings = {
         sizeSetting: sizeInput.value,
         iconsSizeSetting: iconsSizeInput.value,
@@ -55,4 +66,11 @@ function saveChanges() {
     customQuestion.saveChanges(settings, hasError);
 }
 
-
+function numberValidate(input, validated) {
+    if (isNaN(input.value)) {
+        input.classList.add("form-input--error");
+        return false;
+    }
+    input.classList.remove("form-input--error");
+    return validated;
+}
