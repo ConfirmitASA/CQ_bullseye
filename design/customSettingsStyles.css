@@ -1,0 +1,21 @@
+#colorsContainer {
+    margin: 5px 0;
+}
+#colorsContainer input{
+    margin-right: 5px;
+}
+#imagesContainer {
+    padding-top: 10px;
+}
+.imageContainer {
+    padding-bottom: 5px;
+}
+.imagePreview {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+.image-input {
+    display: inline-block;
+}

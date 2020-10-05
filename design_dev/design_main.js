@@ -2,7 +2,16 @@ import Colors from "./bullseyeColors.js";
 import Images from "./images.js";
 
 let language;
-let centerTextSetting = {};
+let centerTextSetting = {
+    9: ""
+};
+let translations = {
+    "numberOfRequired": {
+        texts: {
+            9: "Please change your response. The minimum number of answers should be: "
+        }
+    }
+};
 let elements = init();
 
 function init() {
@@ -38,14 +47,19 @@ function setValues(settings, uiSettings, questionSettings) {
     const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colorNumber, imagesNumber, colors, images} = elements;
     sizeInput.value = settings ? settings.sizeSetting : "";
     iconsSizeInput.value = settings ? settings.iconsSizeSetting: "";
-    centerTextInput.value = settings ? settings.centerTextSetting : "";
+    centerTextInput.value = centerTextSetting ? centerTextSetting[language] : "";
     requiredInput.value = settings ? settings.requiredSetting : "";
     centerIsActive.checked = settings ? settings.centerIsActiveSetting : false;
     centerTextColorInput.value = settings ? settings.centerTextColorSetting : "";
     itemsColorInput.value = settings ? settings.itemsColorSetting : "";
     itemsLayoutInput.value = settings ? settings.itemsLayoutSetting : "vertical";
     colors.init(settings ? settings.bullsEyeColorsSetting : 0);
-    images.init(settings ? settings.iconsImages : 0)
+    images.init(settings ? settings.iconsImages : 0);
+
+    const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item input"));
+    translationItems.forEach((item) => {
+        item.value = translations[item.getAttribute("translation-type")][language];
+    });
 }
 
 function saveChanges() {
@@ -62,8 +76,7 @@ function saveChanges() {
     let settings = {
         sizeSetting: sizeInput.value,
         iconsSizeSetting: iconsSizeInput.value,
-        centerTextSetting: centerTextInput.value,
-        //centerTextArraySetting:    centerTextSetting,
+        centerTextSetting: centerTextSetting,
         requiredSetting: requiredInput.value,
         centerIsActiveSetting: centerIsActive.checked,
         centerTextColorSetting: centerTextColorInput.value,
@@ -72,6 +85,12 @@ function saveChanges() {
         bullsEyeColorsSetting: colors.getColors(),
         iconsImages: images.getImages()
     };
+
+    const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item input"));
+    translationItems.forEach((item) => {
+        translations[item.getAttribute("translation-type")][language] = item.value ? item.value : "";
+    });
+
     //var hasError = inputElement.value === '';
     let hasError = false;
     customQuestion.saveChanges(settings, hasError);
