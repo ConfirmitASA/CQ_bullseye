@@ -14,8 +14,6 @@ function init() {
     let centerTextColorInput = document.getElementById('centerTextColor');
     let itemsColorInput = document.getElementById('itemsColor');
     let itemsLayoutInput = document.getElementById('itemsLayout');
-    let colorNumber = document.getElementById("colorsNumber");
-    let imagesNumber = document.getElementById('imagesNumber');
     const colors = new Colors(saveChanges);
     const images = new Images(saveChanges);
 
@@ -23,39 +21,40 @@ function init() {
     iconsSizeInput.addEventListener('input', saveChanges);
     centerTextInput.addEventListener('input', saveChanges);
     requiredInput.addEventListener('input', saveChanges);
-    centerIsActive.addEventListener('input', saveChanges);
+    centerIsActive.addEventListener('change', saveChanges);
     centerTextColorInput.addEventListener('input', saveChanges);
     itemsColorInput.addEventListener('input', saveChanges);
     itemsLayoutInput.addEventListener('input', saveChanges)
     window.saveChanges = saveChanges;
     customQuestion.onSettingsReceived = setValues;
-    return {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colorNumber, imagesNumber, colors, images};
+    customQuestion.onInit = setValues;
+    return {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colors, images};
 }
 
 function setValues(settings, uiSettings, questionSettings) {
     //setInputValue (input, settings);
     language = uiSettings.currentLanguage;
-    const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colorNumber, imagesNumber, colors, images} = elements;
+    const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colors, images} = elements;
     sizeInput.value = settings ? settings.sizeSetting : "";
     iconsSizeInput.value = settings ? settings.iconsSizeSetting: "";
     centerTextInput.value = settings ? settings.centerTextSetting : "";
     requiredInput.value = settings ? settings.requiredSetting : "";
     centerIsActive.checked = settings ? settings.centerIsActiveSetting : false;
-    centerTextColorInput.value = settings ? settings.centerTextColorSetting : "";
-    itemsColorInput.value = settings ? settings.itemsColorSetting : "";
+    centerTextColorInput.value = settings ? settings.centerTextColorSetting : "#f4ffff";
+    itemsColorInput.value = settings ? settings.itemsColorSetting : "#02086d";
     itemsLayoutInput.value = settings ? settings.itemsLayoutSetting : "vertical";
-    colors.init(settings ? settings.bullsEyeColorsSetting : 0);
-    images.init(settings ? settings.iconsImages : 0)
+    if (questionSettings) {
+        colors.init(settings ? settings.bullsEyeColorsSetting : [], questionSettings, centerIsActive.checked);
+        images.init(settings ? settings.iconsImages : [], questionSettings);
+    }
 }
 
 function saveChanges() {
-    const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colorNumber, imagesNumber, colors, images} = elements;
+    const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput,  colors, images} = elements;
     let validated = true;
     validated = numberValidate(sizeInput, validated);
     validated = numberValidate(iconsSizeInput, validated);
     validated = numberValidate(requiredInput, validated);
-    validated = numberValidate(colorNumber, validated);
-    validated = numberValidate (imagesNumber, validated);
     if (!validated)
         return;
     centerTextSetting[language] = centerTextInput.value;

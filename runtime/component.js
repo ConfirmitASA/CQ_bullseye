@@ -1,5 +1,6 @@
 /* global register */
 register(function (question, customQuestionSettings, questionViewSettings) {
+    debugger;
     if (!customQuestionSettings) customQuestionSettings = [];
     const circleSize = parseInt(customQuestionSettings.sizeSetting);
     const colors = customQuestionSettings.bullsEyeColorsSetting;

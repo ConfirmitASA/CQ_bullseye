@@ -128,7 +128,7 @@ export default class BullsEye {
                     endOnly: true
                 })
             ],
-            autoScroll: false,
+            autoScroll: true,
             onmove: this.dragMoveListener.bind(this),
             onend: this.dragListener.bind(this)
         });
@@ -213,8 +213,8 @@ export default class BullsEye {
         const coords = this.getCoords(centerX, centerY, degreeOffset, (r - (this.gapSize / 2)));
         const group = item.attr("data-group");
         // get original position of the icon
-        const originX = $('[data-group-name="' + group + '"]').position().left;
-        const originY = $('[data-group-name="' + group + '"]').position().top;
+        const originX = $("#" + this.question.id + ' [data-group-name="' + group + '"]').position().left;
+        const originY = $("#" + this.question.id + ' [data-group-name="' + group + '"]').position().top;
         const iconOffset = this.iconDiameter / 2;
         // x will be negative as icons are place to the right
 

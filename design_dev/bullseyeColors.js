@@ -1,52 +1,47 @@
 export default class Colors {
     constructor(saveChanges) {
+        this.scales = [];
         this.colorsValues = [];
         this.colorsContainer = document.getElementById("colorsContainer");
-        this.colorsNumberContainer = document.getElementById("colorsNumber");
-        this.colorsNumberContainer.addEventListener("change", this.updateColorInputs.bind(this));
         this.saveChanges = saveChanges;
     }
 
-    init(colors) {
-        if (colors.length === 0) return;
+    init(colors, questionSettings, centerIsActive) {
         this.colorsValues = colors;
-        this.colorsNumberContainer.value = colors.length;
-        this.renderColorInputs();
+        this.scales = questionSettings.scales;
+        this.scales.unshift({code: "CenterText"});
+        this.renderColorInputs(centerIsActive);
     }
 
-    getColors() {
+    getColors(centerIsActive) {
+        this.saveColorValues();
+        if (centerIsActive) {
+            this.colorsValues.shift();
+            this.colorsContainer.querySelector('div').style.display = 'none';
+        }
+        else
+            this.colorsContainer.querySelector('div').style.display = 'block';
         return this.colorsValues;
     }
 
-    updateColorInputs() {
-        this.renderColorInputs();
-        this.saveChanges();
-    }
+    renderColorInputs(centerIsActive) {
+        this.scales.forEach((scaleAnswer, index) => {
+            let colorItemContainer = document.createElement('div');
+            colorItemContainer.classList.add("colorContainer");
+            colorItemContainer.innerText = `${scaleAnswer["code"]}: `;
+            let colorPicker = document.createElement("input");
+            colorPicker.setAttribute("type", "color");
+            colorPicker.classList += "form-input";
+            if (this.colorsValues[index]) {
+                colorPicker.value = this.colorsValues[index];
+            } else {
+                this.colorsValues.push("#000000");
+            }
+            colorItemContainer.appendChild(colorPicker);
+            this.colorsContainer.appendChild(colorItemContainer);
+            colorPicker.addEventListener("input", this.saveChanges);
+        });
 
-    renderColorInputs() {
-        const prevNumber = this.colorsContainer.querySelectorAll('input[type="color"]').length;
-        const newNumber = this.colorsNumberContainer.value;
-        if (newNumber === prevNumber) return;
-        if (newNumber > prevNumber) {
-            for (let i = prevNumber; i < newNumber; i++) {
-                let colorPicker = document.createElement("input");
-                colorPicker.setAttribute("type", "color");
-                colorPicker.setAttribute("id", `color_${i}`);
-                colorPicker.classList += "form-input";
-                if (this.colorsValues[i]) {
-                    colorPicker.value = this.colorsValues[i];
-                } else {
-                    this.colorsValues.push("#000000");
-                }
-                this.colorsContainer.appendChild(colorPicker);
-                colorPicker.addEventListener("change", this.saveColorValues.bind(this));
-            }
-        } else {
-            for (let i = newNumber; i < prevNumber; i++) {
-                this.colorsContainer.removeChild(document.getElementById(`color_${i}`));
-                this.colorsValues.pop();
-            }
-        }
     }
 
     saveColorValues() {
@@ -55,6 +50,6 @@ export default class Colors {
         colorInputs.forEach(
             (colorInput) => this.colorsValues.push(colorInput.value)
         );
-        this.saveChanges();
+
     }
 }
