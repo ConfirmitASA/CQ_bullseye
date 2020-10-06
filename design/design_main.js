@@ -304,6 +304,7 @@ function init() {
   var imagesNumber = document.getElementById('imagesNumber');
   var colors = new Colors(saveChanges);
   var images = new Images(saveChanges);
+  var translationsInputs = Array.prototype.slice.call(document.querySelectorAll(".translation-item input"));
   sizeInput.addEventListener('input', saveChanges);
   iconsSizeInput.addEventListener('input', saveChanges);
   centerTextInput.addEventListener('input', saveChanges);
@@ -312,6 +313,9 @@ function init() {
   centerTextColorInput.addEventListener('input', saveChanges);
   itemsColorInput.addEventListener('input', saveChanges);
   itemsLayoutInput.addEventListener('input', saveChanges);
+  translationsInputs.forEach(function (input) {
+    return input.addEventListener('input', saveChanges);
+  });
   window.saveChanges = saveChanges;
   customQuestion.onSettingsReceived = setValues;
   return {
@@ -347,7 +351,7 @@ function setValues(settings, uiSettings, questionSettings) {
       images = design_main_elements.images;
   sizeInput.value = settings ? settings.sizeSetting : "";
   iconsSizeInput.value = settings ? settings.iconsSizeSetting : "";
-  centerTextInput.value = centerTextSetting ? centerTextSetting[language] : "";
+  centerTextInput.value = centerTextSetting && centerTextSetting[language] ? centerTextSetting[language] : "";
   requiredInput.value = settings ? settings.requiredSetting : "";
   centerIsActive.checked = settings ? settings.centerIsActiveSetting : false;
   centerTextColorInput.value = settings ? settings.centerTextColorSetting : "";
@@ -355,9 +359,12 @@ function setValues(settings, uiSettings, questionSettings) {
   itemsLayoutInput.value = settings ? settings.itemsLayoutSetting : "vertical";
   colors.init(settings ? settings.bullsEyeColorsSetting : 0);
   images.init(settings ? settings.iconsImages : 0);
-  var translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item input"));
+  var translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item"));
   translationItems.forEach(function (item) {
-    item.value = translations[item.getAttribute("translation-type")][language];
+    var input = item.querySelector("input");
+    var translation = translations[item.getAttribute("translation-type")];
+    var translationWithCurrentLanguage = translation[language];
+    input.value = translationWithCurrentLanguage ? translationWithCurrentLanguage : "";
   });
 }
 

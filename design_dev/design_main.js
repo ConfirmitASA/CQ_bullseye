@@ -27,6 +27,7 @@ function init() {
     let imagesNumber = document.getElementById('imagesNumber');
     const colors = new Colors(saveChanges);
     const images = new Images(saveChanges);
+    const translationsInputs = Array.prototype.slice.call(document.querySelectorAll(".translation-item input"));
 
     sizeInput.addEventListener('input', saveChanges);
     iconsSizeInput.addEventListener('input', saveChanges);
@@ -35,9 +36,12 @@ function init() {
     centerIsActive.addEventListener('input', saveChanges);
     centerTextColorInput.addEventListener('input', saveChanges);
     itemsColorInput.addEventListener('input', saveChanges);
-    itemsLayoutInput.addEventListener('input', saveChanges)
+    itemsLayoutInput.addEventListener('input', saveChanges);
+    translationsInputs.forEach((input) => input.addEventListener('input', saveChanges));
+
     window.saveChanges = saveChanges;
     customQuestion.onSettingsReceived = setValues;
+
     return {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colorNumber, imagesNumber, colors, images};
 }
 
@@ -47,7 +51,7 @@ function setValues(settings, uiSettings, questionSettings) {
     const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colorNumber, imagesNumber, colors, images} = elements;
     sizeInput.value = settings ? settings.sizeSetting : "";
     iconsSizeInput.value = settings ? settings.iconsSizeSetting: "";
-    centerTextInput.value = centerTextSetting ? centerTextSetting[language] : "";
+    centerTextInput.value = centerTextSetting && centerTextSetting[language] ? centerTextSetting[language] : "";
     requiredInput.value = settings ? settings.requiredSetting : "";
     centerIsActive.checked = settings ? settings.centerIsActiveSetting : false;
     centerTextColorInput.value = settings ? settings.centerTextColorSetting : "";
@@ -56,9 +60,12 @@ function setValues(settings, uiSettings, questionSettings) {
     colors.init(settings ? settings.bullsEyeColorsSetting : 0);
     images.init(settings ? settings.iconsImages : 0);
 
-    const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item input"));
+    const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item"));
     translationItems.forEach((item) => {
-        item.value = translations[item.getAttribute("translation-type")][language];
+        const input = item.querySelector("input");
+        const translation = translations[item.getAttribute("translation-type")];
+        const translationWithCurrentLanguage = translation[language];
+        input.value = translationWithCurrentLanguage ? translationWithCurrentLanguage : "";
     });
 }
 
