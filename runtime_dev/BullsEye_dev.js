@@ -1,5 +1,5 @@
 export default class BullsEye {
-    constructor(question, size = 600, iconsSize = 30, circleColors, images, centerText, centerTextColor = "#ffffff", numberOfRequired = 0, isCenterActiveFlag = false, itemsLayout = "vertical", itemsColor = "#000088", translations) {
+    constructor(question, size = 600, iconsSize = 30, circleColors, images, centerText, centerTextColor = "#ffffff", numberOfRequired = 0, isCenterActiveFlag = false, itemsLayout = "vertical", itemsColor = "#000088", centerTextSetting, translations) {
         this.question = question;
         this.bullsEyeSize = size ? size : 600;
         this.centerText = centerText;
@@ -19,6 +19,7 @@ export default class BullsEye {
         this.itemsColor = itemsColor;
         this.itemsLayout = itemsLayout;
         this.itemsPosition = this.qContainer.scrollWidth >= this.bullsEyeSize + this.bullsEyeSize + 72 ? "right" : "bottom"
+        this.centerTextSetting = centerTextSetting;
         this.translations = translations;
 
         this.currentLanguage = Confirmit.page.surveyInfo.language;
@@ -298,7 +299,7 @@ export default class BullsEye {
     }
 
     getTranslatedCenterText() {
-        return this.centerTextSetting[this.currentLanguage] ? this.centerTextSetting[this.currentLanguage] : this.centerTextSetting[9];
+        return this.centerTextSetting[this.currentLanguage] ? this.centerTextSetting[this.currentLanguage] : "";
     }
 
     highlightActiveItem(label, input) {
@@ -310,7 +311,7 @@ export default class BullsEye {
         $("#" + this.question.id).removeClass("cf-question--error");
         $("#" + this.question.id + " .cf-error-block").remove();
         if (this.numberOfRequired && Object.keys(this.question.values).length < this.numberOfRequired) {
-            const error = {message: 'Please provide at least ' + this.numberOfRequired + ' answer(s)'};
+            const error = {message: this.getTranslatedNumberOfRequired() + this.numberOfRequired};
             validationResult.errors.push(error);
             this.renderErrors();
             $("#" + this.question.id + " .cf-error-list").append(error.message);
@@ -319,7 +320,7 @@ export default class BullsEye {
     }
 
     getTranslatedNumberOfRequired() {
-        return this.translations["numberOfRequired"][this.currentLanguage] ? this.translations["numberOfRequired"][this.currentLanguage] : this.translations["numberOfRequired"][9];
+        return this.translations["numberOfRequired"][this.currentLanguage] ? this.translations["numberOfRequired"][this.currentLanguage] : this.translations["numberOfRequired"]["default"];
     }
 
     renderErrors() {

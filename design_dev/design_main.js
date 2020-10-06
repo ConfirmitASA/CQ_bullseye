@@ -7,9 +7,8 @@ let centerTextSetting = {
 };
 let translations = {
     "numberOfRequired": {
-        texts: {
-            9: "Please change your response. The minimum number of answers should be: "
-        }
+        default: "Please change your response. The minimum number of answers should be: ",
+        9: "Please change your response. The minimum number of answers should be: "
     }
 };
 let elements = init();
@@ -46,7 +45,10 @@ function init() {
 function setValues(settings, uiSettings, questionSettings) {
     //setInputValue (input, settings);
     language = uiSettings.currentLanguage;
+    centerTextSetting = settings ? settings.centerTextSetting : centerTextSetting;
+
     const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colors, images} = elements;
+
     sizeInput.value = settings ? settings.sizeSetting : "";
     iconsSizeInput.value = settings ? settings.iconsSizeSetting: "";
     centerTextInput.value = centerTextSetting && centerTextSetting[language] ? centerTextSetting[language] : "";
@@ -60,6 +62,7 @@ function setValues(settings, uiSettings, questionSettings) {
         images.init(settings ? settings.iconsImages : [], questionSettings);
     }
 
+    translations = settings ? settings.translations : translations;
     const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item"));
     translationItems.forEach((item) => {
         const input = item.querySelector("input");
@@ -71,13 +74,23 @@ function setValues(settings, uiSettings, questionSettings) {
 
 function saveChanges() {
     const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput,  colors, images} = elements;
+
     let validated = true;
     validated = numberValidate(sizeInput, validated);
     validated = numberValidate(iconsSizeInput, validated);
     validated = numberValidate(requiredInput, validated);
     if (!validated)
         return;
+
     centerTextSetting[language] = centerTextInput.value;
+
+    const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item"));
+    translationItems.forEach((item) => {
+        const input = item.querySelector("input");
+        const translation = translations[item.getAttribute("translation-type")];
+        translation[language] = input.value ? input.value : (language === 9 ? translation["default"] : "");
+    });
+
     let settings = {
         sizeSetting: sizeInput.value,
         iconsSizeSetting: iconsSizeInput.value,
@@ -88,13 +101,9 @@ function saveChanges() {
         itemsColorSetting: itemsColorInput.value,
         itemsLayoutSetting: itemsLayoutInput.value,
         bullsEyeColorsSetting: colors.getColors(),
-        iconsImages: images.getImages()
+        iconsImages: images.getImages(),
+        translations
     };
-
-    const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item input"));
-    translationItems.forEach((item) => {
-        translations[item.getAttribute("translation-type")][language] = item.value ? item.value : "";
-    });
 
     //var hasError = inputElement.value === '';
     let hasError = false;

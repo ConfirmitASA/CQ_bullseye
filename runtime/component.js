@@ -12,8 +12,9 @@ register(function (question, customQuestionSettings, questionViewSettings) {
     const centerTextColor = customQuestionSettings.centerTextColorSetting;
     const itemsLayout = customQuestionSettings.itemsLayoutSetting;
     const itemsColor = customQuestionSettings.itemsColorSetting;
+    const centerTextSetting = customQuestionSettings.centerTextSetting;
     const translations = customQuestionSettings.translations;
 
-    const bullsEye = new customQuestionsLibrary.BullsEye(question, circleSize, iconsSize, colors, images, centerText, centerTextColor, numberOfRequired, isCenterActiveFlag, itemsLayout, itemsColor, translations);
+    const bullsEye = new customQuestionsLibrary.BullsEye(question, circleSize, iconsSize, colors, images, centerText, centerTextColor, numberOfRequired, isCenterActiveFlag, itemsLayout, itemsColor, centerTextSetting, translations);
     bullsEye.render();
 });
