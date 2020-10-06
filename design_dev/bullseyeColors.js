@@ -33,6 +33,7 @@ export default class Colors {
             let colorPicker = document.createElement("input");
             colorPicker.setAttribute("type", "color");
             colorPicker.classList += "form-input";
+            colorPicker.value = this.defaultColors[index % 7];
             if (this.colorsValues[index]) {
                 colorPicker.value = this.colorsValues[index];
             } else {

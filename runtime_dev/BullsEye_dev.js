@@ -2,7 +2,6 @@ export default class BullsEye {
     constructor(question, size = 600, iconsSize = 30, circleColors, images, centerText, centerTextColor = "#ffffff", numberOfRequired = 0, isCenterActiveFlag = false, itemsLayout = "vertical", itemsColor = "#000088", centerTextSetting, translations) {
         this.question = question;
         this.bullsEyeSize = size ? size : 600;
-        this.centerText = centerText;
         this.numberOfRequired = numberOfRequired;
         this.qContainer = document.querySelector("#" + question.id);
         this.lowestRank = isCenterActiveFlag ? 0 : 1;
@@ -19,15 +18,15 @@ export default class BullsEye {
         this.itemsColor = itemsColor;
         this.itemsLayout = itemsLayout;
         this.itemsPosition = this.qContainer.scrollWidth >= this.bullsEyeSize + this.bullsEyeSize + 72 ? "right" : "bottom"
-        this.centerTextSetting = centerTextSetting;
-        this.translations = translations;
+        this.centerTextSetting = centerTextSetting ? centerTextSetting : "";
+        this.translations = translations ? translations : {
+            "numberOfRequired": {
+                default: "Please change your response. The minimum number of answers should be: "
+            }
+        };
+        this.isBackClicked = false;
 
         this.currentLanguage = Confirmit.page.surveyInfo.language;
-
-        this.question.validationEvent.on(
-            this.onQuestionValidationComplete.bind(this)
-        );
-
         window.addEventListener("resize", this.recalculatePositions.bind(this));
     }
 
@@ -41,6 +40,7 @@ export default class BullsEye {
             '</div>'
         ).appendTo("#" + this.question.id);
         this.renderContent();
+        this.subscribeToQuestion();
     }
 
     renderContent() {
@@ -120,7 +120,6 @@ export default class BullsEye {
         });
 
 
-
     }
 
     makeIconsDraggable() {
@@ -149,7 +148,7 @@ export default class BullsEye {
             "width": (this.iconDiameter + 10) + "px",
             "height": (this.iconDiameter + 10) + "px",
             "line-height": (this.iconDiameter) + "px",
-            "background-color" : this.itemsColor
+            "background-color": this.itemsColor
         });
 
         $('#' + this.question.id + " .draggable-item").css({
@@ -199,7 +198,7 @@ export default class BullsEye {
             const targetIndex = this.question.scales.findIndex(
                 (scale) => scale.code == this.question.values[answerCode]
             );
-            if (this.lowestRank <= parseInt(targetIndex) && parseInt(targetIndex) < this.totalCircles) {
+            if (parseInt(targetIndex) < this.totalCircles) {
                 this.putItemOnTarget(item, value, degreeOffset);
                 degreeOffset += -30;
                 if (degreeOffset < -360) {
@@ -307,6 +306,20 @@ export default class BullsEye {
         $('td[data-group-cell="' + label + '"] span, #' + input).addClass("highlight-cell");
     }
 
+    subscribeToQuestion() {
+        Confirmit.page.beforeNavigateEvent.on((navigation) => {
+            this.isBackClicked = !navigation.next;
+        });
+
+        this.question.validationEvent.on((validationResult) => {
+                if (this.isBackClicked) {
+                    return;
+                }
+                this.onQuestionValidationComplete(validationResult);
+            }
+        );
+    }
+
     onQuestionValidationComplete(validationResult) {
         $("#" + this.question.id).removeClass("cf-question--error");
         $("#" + this.question.id + " .cf-error-block").remove();
@@ -334,8 +347,8 @@ export default class BullsEye {
     recalculatePositions() {
         if (this.qContainer.scrollWidth >= this.bullsEyeSize + this.bullsEyeSize + 72 && this.itemsPosition !== "right") {
             this.itemsPosition = "right";
-            document.querySelectorAll("#" + this.question.id + " .draggable").forEach( item => {
-                if (item.getAttribute("data-x") && item.getAttribute("data-y") ) {
+            document.querySelectorAll("#" + this.question.id + " .draggable").forEach(item => {
+                if (item.getAttribute("data-x") && item.getAttribute("data-y")) {
                     const newXPosition = 0 - parseInt(this.bullsEyeSize) - 20 + parseInt(item.getAttribute("data-x"));
                     const newYPosition = parseInt(this.bullsEyeSize) + 20 + parseInt(item.getAttribute("data-y"));
                     item.setAttribute("data-x", newXPosition);
@@ -344,11 +357,10 @@ export default class BullsEye {
                         'translate(' + item.getAttribute("data-x") + 'px, ' + item.getAttribute("data-y") + 'px)';
                 }
             })
-        }
-        else if (this.qContainer.scrollWidth < this.bullsEyeSize + this.bullsEyeSize + 72 && this.itemsPosition !== "bottom") {
+        } else if (this.qContainer.scrollWidth < this.bullsEyeSize + this.bullsEyeSize + 72 && this.itemsPosition !== "bottom") {
             this.itemsPosition = "bottom";
-            document.querySelectorAll("#" + this.question.id + " .draggable").forEach( item => {
-                if (item.getAttribute("data-x") && item.getAttribute("data-y") ) {
+            document.querySelectorAll("#" + this.question.id + " .draggable").forEach(item => {
+                if (item.getAttribute("data-x") && item.getAttribute("data-y")) {
                     const newXPosition = parseInt(this.bullsEyeSize) + 20 + parseInt(item.getAttribute("data-x"));
                     const newYPosition = 0 - parseInt(this.bullsEyeSize) - 20 + parseInt(item.getAttribute("data-y"));
                     item.setAttribute("data-x", newXPosition);
@@ -363,6 +375,7 @@ export default class BullsEye {
         //     width: this.qContainer.scrollWidth > (this.bullsEyeSize + 250) ? "calc(100% - " + (this.bullsEyeSize + 50) + "px)" : "100%"
         // });
     }
+
     radians(deg) {
         return deg % 360 * Math.PI / 180;
     }
