@@ -9,7 +9,7 @@ export default class Colors {
     init(colors, questionSettings, centerIsActive) {
         this.colorsValues = colors;
         this.scales = questionSettings.scales;
-        this.scales.unshift({code: "CenterText"});
+        this.scales.unshift({code: "Center color"});
         this.renderColorInputs(centerIsActive);
     }
 
