@@ -1,5 +1,5 @@
 export default class BullsEye {
-    constructor(question, size = 600, iconsSize = 30, circleColors, images, centerText, centerTextColor = "#ffffff", numberOfRequired = 0, isCenterActiveFlag = false, itemsLayout = "vertical", itemsColor = "#000088") {
+    constructor(question, size = 600, iconsSize = 30, circleColors, images, centerText, centerTextColor = "#ffffff", numberOfRequired = 0, isCenterActiveFlag = false, itemsLayout = "vertical", itemsColor = "#000088", translations) {
         this.question = question;
         this.bullsEyeSize = size ? size : 600;
         this.centerText = centerText;
@@ -19,6 +19,10 @@ export default class BullsEye {
         this.itemsColor = itemsColor;
         this.itemsLayout = itemsLayout;
         this.itemsPosition = this.qContainer.scrollWidth >= this.bullsEyeSize + this.bullsEyeSize + 72 ? "right" : "bottom"
+        this.translations = translations;
+
+        this.currentLanguage = Confirmit.page.surveyInfo.language;
+
         this.question.validationEvent.on(
             this.onQuestionValidationComplete.bind(this)
         );
@@ -288,9 +292,13 @@ export default class BullsEye {
                 .attr('width', '60')
                 .attr('fill', this.centerTextColor)
                 .attr('font-size', radius / 2)
-                .text(this.centerText)
+                .text(this.getTranslatedCenterText())
                 .appendTo($svg);
         }
+    }
+
+    getTranslatedCenterText() {
+        return this.centerTextSetting[this.currentLanguage] ? this.centerTextSetting[this.currentLanguage] : this.centerTextSetting[9];
     }
 
     highlightActiveItem(label, input) {
@@ -308,6 +316,10 @@ export default class BullsEye {
             $("#" + this.question.id + " .cf-error-list").append(error.message);
             $("#" + this.question.id).addClass("cf-question--error");
         }
+    }
+
+    getTranslatedNumberOfRequired() {
+        return this.translations["numberOfRequired"][this.currentLanguage] ? this.translations["numberOfRequired"][this.currentLanguage] : this.translations["numberOfRequired"][9];
     }
 
     renderErrors() {

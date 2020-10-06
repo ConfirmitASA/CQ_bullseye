@@ -2,7 +2,16 @@ import Colors from "./bullseyeColors.js";
 import Images from "./images.js";
 
 let language;
-let centerTextSetting = {};
+let centerTextSetting = {
+    9: ""
+};
+let translations = {
+    "numberOfRequired": {
+        texts: {
+            9: "Please change your response. The minimum number of answers should be: "
+        }
+    }
+};
 let elements = init();
 
 function init() {
@@ -16,6 +25,7 @@ function init() {
     let itemsLayoutInput = document.getElementById('itemsLayout');
     const colors = new Colors(saveChanges);
     const images = new Images(saveChanges);
+    const translationsInputs = Array.prototype.slice.call(document.querySelectorAll(".translation-item input"));
 
     sizeInput.addEventListener('input', saveChanges);
     iconsSizeInput.addEventListener('input', saveChanges);
@@ -24,7 +34,9 @@ function init() {
     centerIsActive.addEventListener('change', saveChanges);
     centerTextColorInput.addEventListener('input', saveChanges);
     itemsColorInput.addEventListener('input', saveChanges);
-    itemsLayoutInput.addEventListener('input', saveChanges)
+    itemsLayoutInput.addEventListener('input', saveChanges);
+    translationsInputs.forEach((input) => input.addEventListener('input', saveChanges));
+
     window.saveChanges = saveChanges;
     customQuestion.onSettingsReceived = setValues;
     customQuestion.onInit = setValues;
@@ -37,7 +49,7 @@ function setValues(settings, uiSettings, questionSettings) {
     const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colors, images} = elements;
     sizeInput.value = settings ? settings.sizeSetting : "";
     iconsSizeInput.value = settings ? settings.iconsSizeSetting: "";
-    centerTextInput.value = settings ? settings.centerTextSetting : "";
+    centerTextInput.value = centerTextSetting && centerTextSetting[language] ? centerTextSetting[language] : "";
     requiredInput.value = settings ? settings.requiredSetting : "";
     centerIsActive.checked = settings ? settings.centerIsActiveSetting : false;
     centerTextColorInput.value = settings ? settings.centerTextColorSetting : "#f4ffff";
@@ -47,6 +59,14 @@ function setValues(settings, uiSettings, questionSettings) {
         colors.init(settings ? settings.bullsEyeColorsSetting : [], questionSettings, centerIsActive.checked);
         images.init(settings ? settings.iconsImages : [], questionSettings);
     }
+
+    const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item"));
+    translationItems.forEach((item) => {
+        const input = item.querySelector("input");
+        const translation = translations[item.getAttribute("translation-type")];
+        const translationWithCurrentLanguage = translation[language];
+        input.value = translationWithCurrentLanguage ? translationWithCurrentLanguage : "";
+    });
 }
 
 function saveChanges() {
@@ -61,8 +81,7 @@ function saveChanges() {
     let settings = {
         sizeSetting: sizeInput.value,
         iconsSizeSetting: iconsSizeInput.value,
-        centerTextSetting: centerTextInput.value,
-        //centerTextArraySetting:    centerTextSetting,
+        centerTextSetting: centerTextSetting,
         requiredSetting: requiredInput.value,
         centerIsActiveSetting: centerIsActive.checked,
         centerTextColorSetting: centerTextColorInput.value,
@@ -71,6 +90,12 @@ function saveChanges() {
         bullsEyeColorsSetting: colors.getColors(),
         iconsImages: images.getImages()
     };
+
+    const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item input"));
+    translationItems.forEach((item) => {
+        translations[item.getAttribute("translation-type")][language] = item.value ? item.value : "";
+    });
+
     //var hasError = inputElement.value === '';
     let hasError = false;
     customQuestion.saveChanges(settings, hasError);
