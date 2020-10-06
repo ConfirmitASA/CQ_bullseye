@@ -1,5 +1,6 @@
 export default class Colors {
     constructor(saveChanges) {
+        this.defaultColors = ["#718792", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea"];
         this.scales = [];
         this.colorsValues = [];
         this.colorsContainer = document.getElementById("colorsContainer");
@@ -35,7 +36,7 @@ export default class Colors {
             if (this.colorsValues[index]) {
                 colorPicker.value = this.colorsValues[index];
             } else {
-                this.colorsValues.push("#000000");
+                this.colorsValues.push(this.defaultColors[index % 7]);
             }
             colorItemContainer.appendChild(colorPicker);
             this.colorsContainer.appendChild(colorItemContainer);
