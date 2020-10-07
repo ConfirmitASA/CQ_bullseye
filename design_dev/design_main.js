@@ -100,7 +100,7 @@ function saveChanges() {
         centerTextColorSetting: centerTextColorInput.value,
         itemsColorSetting: itemsColorInput.value,
         itemsLayoutSetting: itemsLayoutInput.value,
-        bullsEyeColorsSetting: colors.getColors(),
+        bullsEyeColorsSetting: colors.getColors(centerIsActive.checked),
         iconsImages: images.getImages(),
         translations
     };
