@@ -327,8 +327,14 @@ export default class BullsEye {
             const error = {message: this.getTranslatedNumberOfRequired() + this.numberOfRequired};
             validationResult.errors.push(error);
             this.renderErrors();
-            $("#" + this.question.id + " .cf-error-list").append(error.message);
+            $("#" + this.question.id + " .cf-error-list").append('<li>' + error.message + '</li>');
             $("#" + this.question.id).addClass("cf-question--error");
+        } else {
+            this.renderErrors();
+            validationResult.answerValidationResults.forEach ((error) => {
+                $("#" + this.question.id + " .cf-error-list").append('<li>' + error.errors[0].message+ '</li>');
+                $("#" + this.question.id).addClass("cf-question--error");
+            });
         }
     }
 
