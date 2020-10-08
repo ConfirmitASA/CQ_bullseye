@@ -2,6 +2,7 @@ import Colors from "./bullseyeColors.js";
 import Images from "./images.js";
 
 let language;
+let answersCount = 0;
 let centerTextSetting = {
     9: ""
 };
@@ -35,7 +36,6 @@ function init() {
     itemsColorInput.addEventListener('input', saveChanges);
     itemsLayoutInput.addEventListener('input', saveChanges);
     translationsInputs.forEach((input) => input.addEventListener('input', saveChanges));
-
     window.saveChanges = saveChanges;
     customQuestion.onSettingsReceived = setValues;
     customQuestion.onInit = setValues;
@@ -45,10 +45,9 @@ function init() {
 function setValues(settings, uiSettings, questionSettings) {
     //setInputValue (input, settings);
     language = uiSettings.currentLanguage;
+    answersCount = questionSettings ? questionSettings.answers.length : answersCount;
     centerTextSetting = settings ? settings.centerTextSetting : centerTextSetting;
-
     const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colors, images} = elements;
-
     sizeInput.value = settings ? settings.sizeSetting : "";
     iconsSizeInput.value = settings ? settings.iconsSizeSetting: "";
     centerTextInput.value = centerTextSetting && centerTextSetting[language] ? centerTextSetting[language] : "";
@@ -61,7 +60,6 @@ function setValues(settings, uiSettings, questionSettings) {
         colors.init(settings ? settings.bullsEyeColorsSetting : [], questionSettings, centerIsActive.checked);
         images.init(settings ? settings.iconsImages : [], questionSettings);
     }
-
     translations = settings ? settings.translations : translations;
     const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item"));
     translationItems.forEach((item) => {
@@ -78,7 +76,7 @@ function saveChanges() {
     let validated = true;
     validated = numberValidate(sizeInput, validated);
     validated = numberValidate(iconsSizeInput, validated);
-    validated = numberValidate(requiredInput, validated);
+    validated = numberValidate(requiredInput, validated, 0, answersCount);
     if (!validated)
         return;
 
@@ -110,11 +108,23 @@ function saveChanges() {
     customQuestion.saveChanges(settings, hasError);
 }
 
-function numberValidate(input, validated) {
+function numberValidate(input, validated, minValue, maxValue) {
     if (isNaN(input.value)) {
         input.classList.add("form-input--error");
+        errorTooltipShow(input, "Please enter a valid number");
+        return false;
+    }
+    if (minValue && input.value < minValue) {
+        input.classList.add("form-input--error");
+        errorTooltipShow(input, `Please enter a number greater than ${minValue}`);
+        return false;
+    }
+    if (maxValue && input.value > maxValue) {
+        input.classList.add("form-input--error");
+        errorTooltipShow(input, `Please enter a number less than ${maxValue}`);
         return false;
     }
     input.classList.remove("form-input--error");
+    errorTooltipHide(input);
     return validated;
 }

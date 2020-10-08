@@ -1,3 +1,4 @@
+import 'nodelist-foreach-polyfill';
 export default class Images {
     constructor(saveChanges) {
         this.imagesValues = [];
@@ -54,5 +55,4 @@ export default class Images {
         );
         this.saveChanges();
     }
-
 }

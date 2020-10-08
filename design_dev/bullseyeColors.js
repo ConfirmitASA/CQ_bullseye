@@ -1,3 +1,4 @@
+import 'nodelist-foreach-polyfill';
 export default class Colors {
     constructor(saveChanges) {
         this.defaultColors = ["#718792", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea"];
@@ -32,7 +33,7 @@ export default class Colors {
             colorItemContainer.innerText = `${scaleAnswer["code"]}: `;
             let colorPicker = document.createElement("input");
             colorPicker.setAttribute("type", "color");
-            colorPicker.classList += "form-input";
+            colorPicker.classList.add("form-input");
             colorPicker.value = this.defaultColors[index % 7];
             if (this.colorsValues[index]) {
                 colorPicker.value = this.colorsValues[index];
