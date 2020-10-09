@@ -147,10 +147,11 @@ export default class BullsEye {
         $('#' + this.question.id + " .draggable").css({
             "width": (this.iconDiameter + 10) + "px",
             "height": (this.iconDiameter + 10) + "px",
-            "line-height": (this.iconDiameter) + "px",
-            "background-color": this.itemsColor
+            "line-height": (this.iconDiameter) + "px"
         });
-
+        $('#' + this.question.id + " .draggable__text").css({
+            "background-color": this.itemsColor
+        })
         $('#' + this.question.id + " .draggable-item").css({
             "width": (this.iconDiameter + 10) + "px",
             "height": (this.iconDiameter + 10) + "px"
@@ -329,7 +330,7 @@ export default class BullsEye {
             this.renderErrors();
             $("#" + this.question.id + " .cf-error-list").append('<li>' + error.message + '</li>');
             $("#" + this.question.id).addClass("cf-question--error");
-        } else {
+        } else if(validationResult.answerValidationResults.length > 0) {
             this.renderErrors();
             validationResult.answerValidationResults.forEach ((error) => {
                 $("#" + this.question.id + " .cf-error-list").append('<li>' + error.errors[0].message+ '</li>');

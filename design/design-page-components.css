@@ -438,6 +438,21 @@ input[type="color"] {
     border-radius: 0.286rem;
     overflow-wrap: break-word;
 }
+.comd-tooltip.comd-tooltip--bottom {
+    padding-top: 5px;
+}
+.comd-tooltip--bottom .comd-tooltip__arrow {
+    top: 0;
+    border-width: 0 5px 5px;
+    border-bottom-color: #31363e;
+}
+
+.comd-tooltip--error .comd-tooltip--bottom, .comd-tooltip--error .comd-tooltip__arrow {
+    border-bottom-color: #eb0052;
+}
+.comd-tooltip--error .comd-tooltip__inner {
+    background-color: #eb0052;
+}
 /* tooltip end */
 
 /* collapse */

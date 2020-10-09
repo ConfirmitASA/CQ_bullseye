@@ -1,3 +1,34 @@
+function errorTooltipShow(element, error) {
+    let text = error;
+    let position = {
+        left: element.offsetLeft,
+        top: element.offsetTop
+    };
+    if(document.querySelectorAll("#error--" + element.id).length == 0){
+        let ttErrorBox = document.createElement("div");
+        ttErrorBox.classList.add("comd-tooltip");
+        ttErrorBox.classList.add("comd-tooltip--bottom");
+        ttErrorBox.classList.add("comd-tooltip--error");
+        ttErrorBox.id = "error--" + element.id;
+        ttErrorBox.innerHTML = '<div class="comd-tooltip__arrow"></div><div class="comd-tooltip__inner"></div>';
+        document.body.appendChild(ttErrorBox);
+        ttErrorBox.style.display = "block";
+        ttErrorBox.getElementsByClassName("comd-tooltip__inner")[0].innerHTML = text;
+        let arrPosition = ttErrorBox.offsetWidth/2 - 5 + "px";
+        ttErrorBox.querySelectorAll(".comd-tooltip__arrow")[0].style.left = arrPosition;
+        ttErrorBox.style.top = position.top + ttErrorBox.offsetHeight/2 + 7 + "px";
+        ttErrorBox.style.left = position.left - (ttErrorBox.offsetWidth/2 - element.offsetWidth/2) + "px";
+    }
+}
+
+function errorTooltipHide(element) {
+    if(document.querySelectorAll("#error--" + element.id).length > 0) {
+        element.classList.remove('form-input--error');
+        let ttErrorBox = document.getElementById("error--" + element.id);
+        ttErrorBox.outerHTML = "";
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function(){
     /* tooltip */
     function tooltipToggle(el) {
