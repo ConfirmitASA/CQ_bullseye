@@ -96,7 +96,7 @@ export default class BullsEye {
             const code = answer.code;
             let icon = "";
             if (this.images[index]) {
-                icon = `<span title="${group}"  data-code="${code}" class="draggable" data-group="${group}" back><img src="${this.images[index]}"></img></span>`
+                icon = `<span title="${group}"  data-code="${code}" class="draggable" data-group="${group}" style="background-image: url('${this.images[index]}'); background-size: 100% 100%;"></span>`
             } else {
                 icon = `<span title="${group}"  data-code="${code}" class="draggable draggable__text" data-group="${group}" ><b>${group}</b></span>`
             }
