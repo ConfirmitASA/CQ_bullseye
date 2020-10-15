@@ -32,6 +32,12 @@
     display: flex;
     align-items: center;
     padding: 2px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+.draggable-item {
+    display: inline-block;
 }
 
 .draggable {
@@ -54,6 +60,10 @@
     overflow: hidden;
     white-space: nowrap;
     cursor: grab;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -ms-touch-action: none;
+    touch-action: none;
     z-index: 999;
 }
 
@@ -69,6 +79,7 @@
 
 .target-question-wrapper .label-type {
     display: block;
+    -webkit-user-select: none;
 }
 
 .target-question-wrapper .ui-state-hover {
@@ -113,12 +124,3 @@
     white-space: nowrap;
 }
 
-
-.draggable {
-    -ms-touch-action: none;
-    touch-action: none;
-}
-
-.draggable-item {
-    display: inline-block;
-}
