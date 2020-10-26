@@ -6,7 +6,5 @@
 *.ZIP
 colorpicker.HTML
 ColorPickerHTML.html
-/design/customSettingsStyles.css
-/design/design_main.js
-/design/index.html
-/runtime/bullsEye_bundle.js
+/design/
+/runtime/
