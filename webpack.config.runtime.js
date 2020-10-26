@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
     entry: './runtime_dev/entry.js',
     output: {
@@ -21,7 +22,15 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                path.resolve(__dirname, 'runtime_dev', 'styles.css'),
+                path.resolve(__dirname, 'runtime_dev', 'component.js')
+            ],
+        })
+    ]
 };
 
 
