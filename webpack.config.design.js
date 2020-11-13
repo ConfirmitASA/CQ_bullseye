@@ -1,9 +1,9 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
-    entry: './design_dev/design_main.js',
+    entry: './design_dev/design-main.js',
     output: {
-        filename: './design_main.js',
+        filename: './design-main.js',
         path: path.resolve(__dirname, 'design'),
     },
     optimization: {
@@ -27,7 +27,7 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 path.resolve(__dirname, 'design_dev', 'index.html'),
-                path.resolve(__dirname, 'design_dev', 'customSettingsStyles.css'),
+                path.resolve(__dirname, 'design_dev', 'bullseye-styles.css'),
                 path.resolve(__dirname, 'design_dev', 'design-page-components.css'),
                 path.resolve(__dirname, 'design_dev', 'design-page-components.js'),
                 path.resolve(__dirname, 'design_dev', 'bullseye.png'),
@@ -36,6 +36,4 @@ module.exports = {
         })
     ]
 };
-
-
 

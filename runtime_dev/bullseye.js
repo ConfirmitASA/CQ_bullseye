@@ -1,5 +1,23 @@
-export default class BullsEye {
-    constructor(question, size = 600, iconsSize = 30, circleColors, images, centerText, centerTextColor = "#ffffff", numberOfRequired = 0, isCenterActiveFlag = false, itemsLayout = "vertical", itemsColor = "#000088", centerTextSetting, translations) {
+import interact from 'interactjs'
+import $ from 'jquery'
+
+export default class Bullseye {
+    /**
+     * @description constructor
+     * @param question - CQ object
+     * @param size - target diameter in pixels
+     * @param iconsSize - diameter of draggable items in pixels
+     * @param circleColors - array of colors for coloring target circles
+     * @param images - array of images links for draggable items
+     * @param centerTextColor - color for center text
+     * @param numberOfRequired - number that means at least how many items should be dragged to the target
+     * @param isCenterActiveFlag - could be items dragged to the target center or not
+     * @param itemsLayout - how items should be positioned - vertically or horizontalky
+     * @param itemsColor - background color for draggable items
+     * @param centerTextTranslations - set of translated texts to render in the target center
+     * @param translations - set of all other translated texts for Custom Questions (error message for "number of required")
+     */
+    constructor(question, size = 600, iconsSize = 30, circleColors, images, centerTextColor = "#ffffff", numberOfRequired = 0, isCenterActiveFlag = false, itemsLayout = "vertical", itemsColor = "#000088", centerTextTranslations, translations) {
         this.question = question;
         this.bullsEyeSize = size ? size : 600;
         this.numberOfRequired = numberOfRequired;
@@ -18,18 +36,21 @@ export default class BullsEye {
         this.itemsColor = itemsColor;
         this.itemsLayout = itemsLayout;
         this.itemsPosition = this.qContainer.scrollWidth >= this.bullsEyeSize + this.bullsEyeSize + 72 ? "right" : "bottom"
-        this.centerTextSetting = centerTextSetting ? centerTextSetting : "";
+        this.centerTextTranslations = centerTextTranslations ? centerTextTranslations : "";
         this.translations = translations ? translations : {
             "numberOfRequired": {
                 default: "Please change your response. The minimum number of answers should be: "
             }
         };
         this.isBackClicked = false;
-
         this.currentLanguage = Confirmit.page.surveyInfo.language;
+
         window.addEventListener("resize", this.recalculatePositions.bind(this));
     }
 
+     /**
+    * @description rendering HTML containers
+    */
     render() {
         $(
             '<div class="cf-question__text">' + this.question.text + "</div>"
@@ -43,6 +64,9 @@ export default class BullsEye {
         this.subscribeToQuestion();
     }
 
+    /**
+     * @description rendering HTML content
+     */
     renderContent() {
         $(
             '<div class="target-question-wrapper">' +
@@ -75,6 +99,9 @@ export default class BullsEye {
         this.initValues();
     }
 
+    /**
+     * @description rendering bullseye target element
+     */
     createBullsEye() {
         let emptyCenter = [];
         if (!this.centerIsActive)
@@ -87,6 +114,9 @@ export default class BullsEye {
         });
     }
 
+    /**
+     * @description rendering draggable items
+     */
     createIcons() {
         let groups = {};
         let groupNames = [];
@@ -120,6 +150,9 @@ export default class BullsEye {
         });
     }
 
+    /**
+     * @description applying interact.js library to make items draggable
+     */
     makeIconsDraggable() {
         interact('#' + this.question.id + ' .draggable').draggable({
             inertia: false,
@@ -156,6 +189,9 @@ export default class BullsEye {
         });
     }
 
+    /**
+     * @description listening for drag end event to get the circle where item was put
+     */
     dragListener(event) {
         const x = event.pageX;
         const y = event.pageY;
@@ -186,6 +222,49 @@ export default class BullsEye {
         }
     }
 
+    /**
+     * @description listening for drag event to get item position/coordinates
+     */
+    dragMoveListener(event) {
+        const target = event.target;
+        // keep the dragged position in the data-x/data-y attributes
+        const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+        const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+        // translate the element
+        //target.style.webkitTransform =
+        target.style.transform =
+            'translate(' + x + 'px, ' + y + 'px)';
+
+        // update the posiion attributes
+        target.setAttribute('data-x', x);
+        target.setAttribute('data-y', y);
+    }
+
+    /**
+     * @description checking if item could placed on any circle, or if it out of target at all
+     * @param hitx - x position of the draggable item
+     * @param hity - y position of the draggable item
+     */
+    checkItemInTargets(hitx, hity) {
+        let codesToCheck = this.question.scales;
+        if (!this.centerIsActive) {
+            codesToCheck = [{code: ""}].concat(codesToCheck);
+        }
+        for (let i = 0; i < this.totalCircles; i++) {
+            const target = $("#" + this.question.id + " #target_" + codesToCheck[i].code);
+            const x = target.position().left + parseInt(target.attr("r"));
+            const y = target.position().top + parseInt(target.attr("r"));
+            const hit = this.checkTargetHit(hitx, hity, x, y, parseInt(target.attr("r")));
+            if (hit === true) {
+                return target.attr("data-rank");
+            }
+        }
+        return -1;
+    }
+
+     /**
+     * @description initialising positions if the question has been answered earlier
+     */
     initValues() {
         if (Object.keys(this.question.values).length === 0) {
             return;
@@ -207,10 +286,16 @@ export default class BullsEye {
         });
     }
 
-    putItemOnTarget(item, target, degreeOffset) {
+    /**
+     * @description putting draggable item on target
+     * @param item - item itself
+     * @param circleId - circle id where item should be put
+     * @param degreeOffset - an angle to shift an item, otherwise some items could be put at the same coordinates
+     */
+    putItemOnTarget(item, circleId, degreeOffset) {
         const centerX = $("#" + this.question.id + " .target-wrapper").position().left + ($("#" + this.question.id + " .target-wrapper").width() / 2);
         const centerY = $("#" + this.question.id + " .target-wrapper").position().top + ($("#" + this.question.id + " .target-wrapper").height() / 2);
-        const circle = $("#" + this.question.id + ' #target_' + target);
+        const circle = $("#" + this.question.id + ' #target_' + circleId);
         const r = parseInt(circle.attr("r"));
         //get position where icon should be shown
         const coords = this.getCoords(centerX, centerY, degreeOffset, (r - (this.gapSize / 2)));
@@ -236,38 +321,15 @@ export default class BullsEye {
         item[0].setAttribute('data-y', offsetY);
     }
 
-    dragMoveListener(event) {
-        const target = event.target;
-        // keep the dragged position in the data-x/data-y attributes
-        const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-        const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-        // translate the element
-        //target.style.webkitTransform =
-        target.style.transform =
-            'translate(' + x + 'px, ' + y + 'px)';
-
-        // update the posiion attributes
-        target.setAttribute('data-x', x);
-        target.setAttribute('data-y', y);
-    }
-
-    checkItemInTargets(hitx, hity) {
-        let codesToCheck = this.question.scales;
-        if (!this.centerIsActive) {
-            codesToCheck = [{code: ""}].concat(codesToCheck);
-        }
-        for (let i = 0; i < this.totalCircles; i++) {
-            const target = $("#" + this.question.id + " #target_" + codesToCheck[i].code);
-            const x = target.position().left + parseInt(target.attr("r"));
-            const y = target.position().top + parseInt(target.attr("r"));
-            const hit = this.checkTargetHit(hitx, hity, x, y, parseInt(target.attr("r")));
-            if (hit === true) {
-                return target.attr("data-rank");
-            }
-        }
-        return -1;
-    }
-
+    /**
+     * @description drawing target circles
+     * @param x - x coordinate of circle center
+     * @param y - y coordinate of circle center
+     * @param color - circle color
+     * @param elemId - drawn svg element id
+     * @param radius - circle radius
+     * @param rank - circle rank, number starting from target center
+     */
     drawCircle(x, y, color, elemId, radius, rank) {
         const $svg = $("#" + this.question.id + " .target-wrapper");
         $(document.createElementNS('http' + '://www.w3.org/2000/svg', 'circle'))
@@ -296,10 +358,16 @@ export default class BullsEye {
         }
     }
 
+    /**
+    * @description - getting center text from the translations set
+    */
     getTranslatedCenterText() {
-        return this.centerTextSetting[this.currentLanguage] ? this.centerTextSetting[this.currentLanguage] : "";
+        return this.centerTextTranslations[this.currentLanguage] ? this.centerTextTranslations[this.currentLanguage] : "";
     }
 
+    /**
+     * @description - maybe should be deleted
+     */
     highlightActiveItem(label, input) {
         $('td[data-group-cell] span, input').removeClass("highlight-cell");
         $('td[data-group-cell="' + label + '"] span, #' + input).addClass("highlight-cell");
@@ -319,6 +387,9 @@ export default class BullsEye {
         );
     }
 
+    /**
+     * @description - function to add custom validation (min number of required) to the original validation
+     */
     onQuestionValidationComplete(validationResult) {
         $("#" + this.question.id).removeClass("cf-question--error");
         $("#" + this.question.id + " .cf-error-block").remove();
@@ -337,10 +408,16 @@ export default class BullsEye {
         }
     }
 
+    /**
+     * @description - getting "number of required" translated message
+     */
     getTranslatedNumberOfRequired() {
         return this.translations["numberOfRequired"][this.currentLanguage] ? this.translations["numberOfRequired"][this.currentLanguage] : this.translations["numberOfRequired"]["default"];
     }
 
+    /**
+     * @description - rendering all error messages
+     */
     renderErrors() {
         $(
             '<div class="cf-question__error cf-error-block cf-error-block--bottom">' +
@@ -349,6 +426,9 @@ export default class BullsEye {
         ).insertAfter("#" + this.question.id + " .cf-question__instruction");
     }
 
+    /**
+     * @description - redrawing items if items conater position was changed from right to bottom or otherwise
+     */
     recalculatePositions() {
         if (this.qContainer.scrollWidth >= this.bullsEyeSize + this.bullsEyeSize + 72 && this.itemsPosition !== "right") {
             this.itemsPosition = "right";
@@ -375,16 +455,22 @@ export default class BullsEye {
                 }
             })
         }
-
-        // $("#" + this.question.id + " .target-relations").css({
-        //     width: this.qContainer.scrollWidth > (this.bullsEyeSize + 250) ? "calc(100% - " + (this.bullsEyeSize + 50) + "px)" : "100%"
-        // });
     }
 
+    /**
+     * @description - radians calculation
+     */
     radians(deg) {
         return deg % 360 * Math.PI / 180;
     }
 
+    /**
+     * @description - calculation of x-y position for darggable element on the target
+     * @param cx - x coordinate of the circle center
+     * @param cy - y coordinate of the circle center
+     * @param deg - angle in degrees
+     * @param radius - circle radius
+     */
     getCoords(cx, cy, deg, radius) {
         const angle = this.radians(deg);
         const x = cx + radius * Math.cos(angle);
@@ -395,15 +481,14 @@ export default class BullsEye {
         };
     }
 
-    getCircumferencePoints(cx, cy, deg, radius) {
-        const x = (cx + radius) * Math.sin(deg * (Math.PI / 180));
-        const y = (cy + radius) * (-Math.cos(deg * (Math.PI / 180)));
-        return {
-            x: x,
-            y: y
-        };
-    }
-
+    /**
+     * @description - checking if draggable item should be placed on the circle
+     * @param a - x position of the draggable item
+     * @param b - y position of the draggable item
+     * @param cx - x coordinate of the circle center
+     * @param cy - y coordinate of the circle center
+     * @param r - circle radius
+     */
     checkTargetHit(a, b, cx, cy, r) {
         const dist_points = (a - cx) * (a - cx) + (b - cy) * (b - cy);
         r *= r;

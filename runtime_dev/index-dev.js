@@ -1,5 +1,5 @@
 /* global register */
-import BullsEye from "./BullsEye_dev";
+import Bullseye from "./BullsEye";
 (function () {
     const question = Confirmit.page.questions[0];
     let circleSize = 500;
@@ -9,10 +9,9 @@ import BullsEye from "./BullsEye_dev";
     let isCenterActiveFlag = false;
     let numberOfRequired = 3;
     let itemsLayout = "vertical";
-    //let shouldBeAtLeastOneAnswerFlag = false;
     let maxSizeOfIcon = 50;
     let centerTextColor = "#d6b331";
     let itemsColor  = "#2860d6";
-    const bullsEye = new BullsEye(question, circleSize, maxSizeOfIcon, colors, images, centerText, centerTextColor, numberOfRequired, isCenterActiveFlag, itemsLayout, itemsColor)
+    const bullsEye = new Bullseye(question, circleSize, maxSizeOfIcon, colors, images, centerText, centerTextColor, numberOfRequired, isCenterActiveFlag, itemsLayout, itemsColor)
     bullsEye.render();
 })();

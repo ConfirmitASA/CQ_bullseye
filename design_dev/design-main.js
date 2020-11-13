@@ -1,5 +1,5 @@
-import Colors from "./bullseyeColors.js";
-import Images from "./images.js";
+import Colors from "./question-scale-colors.js";
+import Images from "./question-prompts-images.js";
 
 let language;
 let answersCount = 0;
@@ -14,6 +14,9 @@ let translations = {
 };
 let elements = init();
 
+/**
+ * @description Funtion to get and init elements on the Custom Settings tab
+ */
 function init() {
     let sizeInput = document.getElementById('size');
     let iconsSizeInput = document.getElementById('iconsSize');
@@ -39,17 +42,33 @@ function init() {
     window.saveChanges = saveChanges;
     customQuestion.onSettingsReceived = setValues;
     customQuestion.onInit = setValues;
-    return {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colors, images};
+    return {
+        sizeInput,
+        iconsSizeInput,
+        centerTextInput,
+        requiredInput,
+        centerIsActive,
+        centerTextColorInput,
+        itemsColorInput,
+        itemsLayoutInput,
+        colors,
+        images
+    };
 }
 
+/**
+ * @description Function to set values into HTML elements on the Custom Settings tab
+ * @param settings - customQuestionSettings value that was got from the custom-question
+ * @param uiSettings - uiSettings value that was got from the custom-question
+ * @param questionSettings - questionSettings value that was got from the custom-question
+ */
 function setValues(settings, uiSettings, questionSettings) {
-    //setInputValue (input, settings);
     language = uiSettings.currentLanguage;
     answersCount = questionSettings ? questionSettings.answers.length : answersCount;
     centerTextSetting = settings ? settings.centerTextSetting : centerTextSetting;
     const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colors, images} = elements;
     sizeInput.value = settings ? settings.sizeSetting : "";
-    iconsSizeInput.value = settings ? settings.iconsSizeSetting: "";
+    iconsSizeInput.value = settings ? settings.iconsSizeSetting : "";
     centerTextInput.value = centerTextSetting && centerTextSetting[language] ? centerTextSetting[language] : "";
     requiredInput.value = settings ? settings.requiredSetting : "";
     centerIsActive.checked = settings ? settings.centerIsActiveSetting : false;
@@ -70,8 +89,11 @@ function setValues(settings, uiSettings, questionSettings) {
     });
 }
 
+/**
+ * @description Function to get values from the Custom Settings tab element and pass settings into the Bullseye question
+ */
 function saveChanges() {
-    const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput,  colors, images} = elements;
+    const {sizeInput, iconsSizeInput, centerTextInput, requiredInput, centerIsActive, centerTextColorInput, itemsColorInput, itemsLayoutInput, colors, images} = elements;
 
     let validated = true;
     validated = numberValidate(sizeInput, validated);
@@ -79,9 +101,7 @@ function saveChanges() {
     validated = numberValidate(requiredInput, validated, 0, answersCount);
     if (!validated)
         return;
-
     centerTextSetting[language] = centerTextInput.value;
-
     const translationItems = Array.prototype.slice.call(document.querySelectorAll(".translation-item"));
     translationItems.forEach((item) => {
         const input = item.querySelector("input");
@@ -107,7 +127,13 @@ function saveChanges() {
     let hasError = false;
     customQuestion.saveChanges(settings, hasError);
 }
-
+/**
+ * @description Function to validate inputs with Number values on the Custom Settings tab
+ * @param input - HTML input
+ * @param {boolean} validated - was form Validated or not
+ * @param {float} minValue - input value should me more or equal to minValue
+ * @param {float} maxValue - input value should me less or equal to maxValue
+ */
 function numberValidate(input, validated, minValue, maxValue) {
     if (isNaN(input.value)) {
         input.classList.add("form-input--error");

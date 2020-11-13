@@ -1,5 +1,9 @@
 import 'nodelist-foreach-polyfill';
 export default class Colors {
+    /**
+     * @description constructor
+     * @param saveChanges - function to save all values on the Custom Settings tab
+     */
     constructor(saveChanges) {
         this.defaultColors = ["#718792", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea", "#d3e8f2", "#abd3ea"];
         this.scales = [];
@@ -8,6 +12,12 @@ export default class Colors {
         this.saveChanges = saveChanges;
     }
 
+    /**
+     * @description Function to init values
+     * @param colors - colors list
+     * @param questionSettings - question settings, where list of prompt answers is stored
+     * @param {boolean} centerIsActive - is target center active or not
+     */
     init(colors, questionSettings, centerIsActive) {
         this.colorsValues = colors;
         this.scales = questionSettings.scales;
@@ -15,6 +25,11 @@ export default class Colors {
         this.renderColorInputs(centerIsActive);
     }
 
+    /**
+     * @description Function to get colors list
+     * @param {boolean} centerIsActive - is target center active or not
+     * @return colors list
+     */
     getColors(centerIsActive) {
         this.saveColorValues();
         if (centerIsActive) {
@@ -26,10 +41,14 @@ export default class Colors {
         return this.colorsValues;
     }
 
+    /**
+     * @description Function to render HTML inputs for selecting colors
+     * @param {boolean} centerIsActive - is target center active or not
+     */
     renderColorInputs(centerIsActive) {
         this.scales.forEach((scaleAnswer, index) => {
             let colorItemContainer = document.createElement('div');
-            colorItemContainer.classList.add("colorContainer");
+            colorItemContainer.classList.add("color-container");
             colorItemContainer.innerText = `${scaleAnswer["code"]}: `;
             let colorPicker = document.createElement("input");
             colorPicker.setAttribute("type", "color");
@@ -44,9 +63,11 @@ export default class Colors {
             this.colorsContainer.appendChild(colorItemContainer);
             colorPicker.addEventListener("input", this.saveChanges);
         });
-
     }
 
+    /**
+     * @description Function to save colors list as a part of question custom settings
+     */
     saveColorValues() {
         this.colorsValues = [];
         const colorInputs = this.colorsContainer.querySelectorAll('input[type="color"]');

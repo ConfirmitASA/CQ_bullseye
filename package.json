@@ -16,6 +16,8 @@
     "babel-loader": "^8.1.0",
     "copy-webpack-plugin": "^6.0.3",
     "html-webpack-plugin": "^4.3.0",
+    "interactjs": "^1.10.0",
+    "jquery": "^3.5.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   },

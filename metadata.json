@@ -11,8 +11,6 @@
     "component": "runtime/component.js",
     "deps": {
       "scripts": [
-        "https://author.euro.confirmit.com/isa/BDJPFRDMEYBPBKLVADAYFQCDAVIOEQJR/AGalaida/jquery.1.12.4.min.js",
-        "https://author.euro.confirmit.com//isa/BDJPFRDMEYBPBKLVADAYFQCDAVIOEQJR/AGalaida/interact.min.js",
         "runtime/bullsEye_bundle.js"
       ],
       "styles": [

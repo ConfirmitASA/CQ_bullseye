@@ -96,7 +96,6 @@
 
 .target-question-wrapper {
     width: 100%;
-    /*background-color: #fff;*/
     display: flex;
     flex-wrap: wrap;
     overflow-x: auto;
@@ -110,7 +109,6 @@
 }
 
 .target-question-wrapper .metext {
-    /*font-size: 1.75em;*/
     font-weight: 900;
 }
 

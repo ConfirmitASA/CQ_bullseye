@@ -1,5 +1,5 @@
-import BullsEye from "./BullsEye_dev"
+import Bullseye from "./bullseye"
 if (window && !window.customQuestionsLibrary) {
     window.customQuestionsLibrary = {};
 }
-window.customQuestionsLibrary.BullsEye = BullsEye;
+window.customQuestionsLibrary.BullsEye = Bullseye;

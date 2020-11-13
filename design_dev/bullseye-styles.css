@@ -7,13 +7,13 @@
 #imagesContainer {
     padding-top: 10px;
 }
-.colorContainer {
+.color-container {
     padding-bottom: 5px;
 }
-.imageContainer {
+.image-container {
     padding-bottom: 5px;
 }
-.imagePreview {
+.image-preview {
     width: 30px;
     height: 30px;
     margin-left: 5px;
